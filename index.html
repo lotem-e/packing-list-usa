@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>רשימת אריזה — ארה"ב 2026 · לוטם ועתי</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Karantina:wght@400;700&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --dust:#EDEBE4;
+    --card:#FBFAF6;
+    --ink:#242938;
+    --ink2:#666B7D;
+    --line:#DBD8CD;
+    --neon-p:#E9398C;
+    --neon-c:#1FB3C9;
+    --violet:#6E5AE0;
+    --wire:linear-gradient(270deg, var(--neon-p), var(--violet), var(--neon-c));
+    --r:16px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--dust); color:var(--ink);
+    font-family:"Heebo", -apple-system, "Segoe UI", Arial, sans-serif;
+    font-size:16px; line-height:1.55;
+  }
+  /* ── פס עליון דביק ── */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:rgba(237,235,228,.9); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .in{
+    max-width:680px; margin:0 auto; padding:10px 18px 6px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .topbar .name{
+    font-family:"Karantina", "Heebo", sans-serif; font-weight:700;
+    font-size:26px; line-height:1; margin-inline-end:auto;
+  }
+  .topbar .tally{font-size:14px; color:var(--ink2); font-weight:500; white-space:nowrap}
+  .topbar .tally b{color:var(--ink); font-size:16px}
+  .editbtn{
+    font-family:inherit; font-size:13px; font-weight:700; color:var(--ink2);
+    background:none; border:1.5px solid var(--line); border-radius:99px;
+    padding:4px 13px; cursor:pointer; white-space:nowrap;
+  }
+  .editmode .editbtn{
+    color:var(--violet); border-color:var(--violet);
+    box-shadow:0 0 8px rgba(110,90,224,.3);
+  }
+  .editbtn:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
+  .tabs{max-width:680px; margin:0 auto; padding:0 18px 10px; display:flex; gap:7px}
+  .tabbtn{
+    flex:1; font-family:inherit; cursor:pointer; text-align:center;
+    background:transparent; color:var(--ink2);
+    border:1.5px solid var(--line); border-radius:13px; padding:6px 4px 5px;
+  }
+  .tabbtn .nm{display:block; font-family:"Karantina",sans-serif; font-weight:700; font-size:23px; line-height:1.05}
+  .tabbtn .ct{display:block; font-size:11px; font-weight:500; margin-top:2px}
+  .tabbtn[data-tab="L"]{--pc:var(--neon-p)}
+  .tabbtn[data-tab="A"]{--pc:var(--neon-c)}
+  .tabbtn[data-tab="S"]{--pc:var(--violet)}
+  .tabbtn.on{
+    background:var(--card); color:var(--ink); border-color:transparent;
+    box-shadow:inset 0 -3px 0 0 var(--pc), 0 1px 4px rgba(36,41,56,.06);
+  }
+  .tabbtn:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
+  .wire{height:5px; background:#E3E1D8; position:relative}
+  .wire i{
+    position:absolute; inset-inline-start:0; top:0; bottom:0; width:0%;
+    background:var(--wire); border-radius:0 3px 3px 0;
+    box-shadow:0 0 10px rgba(233,57,140,.55), 0 0 22px rgba(110,90,224,.35);
+    transition:width .35s ease;
+  }
+  /* ── פתיח ── */
+  .wrap{max-width:680px; margin:0 auto; padding:26px 18px 80px}
+  .hero h1{
+    font-family:"Karantina", sans-serif; font-weight:700;
+    font-size:clamp(46px, 13vw, 74px); line-height:.95; margin:6px 0 10px;
+  }
+  .hero h1 .glow{
+    background:var(--wire); -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 0 14px rgba(233,57,140,.35));
+  }
+  /* ── טאבים ── */
+  .tabpane{display:none}
+  .tabpane.on{display:block}
+  .ptitle{display:none}
+  /* ── קבוצות ── */
+  section.grp{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+    margin-top:22px; overflow:hidden;
+  }
+  .gh{
+    display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+    padding:16px 18px 10px;
+  }
+  .gh h2{
+    margin:0; font-family:"Karantina",sans-serif; font-weight:700;
+    font-size:30px; line-height:1.05; letter-spacing:.01em;
+  }
+  .gh h2 small{
+    display:block; font-family:"Heebo",sans-serif; font-weight:500;
+    font-size:13px; color:var(--ink2); letter-spacing:0; margin-top:3px;
+  }
+  section.grp.full .gh h2{
+    background:var(--wire); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .gh .cnt{font-size:14px; color:var(--ink2); font-weight:700; white-space:nowrap}
+  .gbar{height:3px; margin:0 18px; background:#ECEAE2; border-radius:2px; overflow:hidden}
+  .gbar i{display:block; height:100%; width:0%; background:var(--wire); transition:width .3s ease}
+  section.grp ul{list-style:none; margin:6px 0 0; padding:4px 10px 12px}
+  h3.sub{
+    margin:14px 10px 2px; font-size:12.5px; font-weight:700; color:var(--violet);
+    letter-spacing:.14em;
+  }
+  /* ── פריטים ── */
+  li.it{border-radius:12px; display:flex; align-items:stretch}
+  li.it label{
+    flex:1 1 auto; display:flex; align-items:flex-start; gap:12px;
+    padding:10px 8px; cursor:pointer; border-radius:12px; min-width:0;
+  }
+  li.it label:active{background:rgba(110,90,224,.06)}
+  li.it input{position:absolute; opacity:0; width:1px; height:1px}
+  .box{
+    flex:0 0 auto; width:23px; height:23px; margin-top:2px;
+    border:2px solid #A9AEBE; border-radius:7px; position:relative;
+    transition:all .15s ease; background:#fff;
+  }
+  .box::after{
+    content:""; position:absolute; left:50%; top:50%; width:12px; height:7px;
+    border-left:2.5px solid #fff; border-bottom:2.5px solid #fff;
+    transform:translate(-50%,-60%) rotate(-45deg) scale(0); transform-origin:center;
+    transition:transform .15s ease;
+  }
+  li.it input:checked ~ .box{
+    background:var(--neon-p); border-color:var(--neon-p);
+    box-shadow:0 0 9px rgba(233,57,140,.55);
+  }
+  .tabpane[data-tab="A"] li.it input:checked ~ .box{
+    background:var(--neon-c); border-color:var(--neon-c);
+    box-shadow:0 0 9px rgba(31,179,201,.55);
+  }
+  .tabpane[data-tab="S"] li.it input:checked ~ .box{
+    background:var(--violet); border-color:var(--violet);
+    box-shadow:0 0 9px rgba(110,90,224,.55);
+  }
+  li.it input:checked ~ .box::after{transform:translate(-50%,-60%) rotate(-45deg) scale(1)}
+  li.it input:focus-visible ~ .box{outline:3px solid var(--violet); outline-offset:2px}
+  .tx{flex:1 1 auto; min-width:0}
+  .tx small{display:block; color:var(--ink2); font-size:13px; line-height:1.45; margin-top:1px}
+  li.it.done .tx{color:var(--ink2); text-decoration:line-through; text-decoration-color:rgba(102,107,125,.6)}
+  li.it.done .tx small{text-decoration:none; opacity:.7}
+  /* ── עריכה ── */
+  .ictl{display:none; align-items:center; gap:6px; padding-inline-start:2px; padding-inline-end:4px}
+  .editmode .ictl{display:flex}
+  .ictl button{
+    width:31px; height:31px; border-radius:10px; cursor:pointer;
+    border:1.5px solid var(--line); background:#fff; color:var(--ink2);
+    font-size:14px; line-height:1; padding:0;
+  }
+  .ictl button:hover{color:var(--ink); border-color:var(--ink2)}
+  .ictl button.del:hover{color:var(--neon-p); border-color:var(--neon-p)}
+  .ictl button:focus-visible{outline:3px solid var(--violet); outline-offset:1px}
+  li.addrow{
+    margin:8px 8px 2px; padding:9px 12px; border:1.5px dashed var(--line);
+    border-radius:12px; color:var(--ink2); font-weight:500; font-size:14.5px;
+    cursor:pointer; list-style:none;
+  }
+  li.addrow:hover{color:var(--ink); border-color:var(--ink2)}
+  li.edrow{list-style:none; padding:6px 2px}
+  .ed{
+    display:flex; flex-direction:column; gap:8px;
+    background:#fff; border:1.5px solid var(--violet); border-radius:12px; padding:12px;
+    box-shadow:0 0 10px rgba(110,90,224,.18);
+  }
+  .ed input{
+    font:inherit; color:var(--ink); background:var(--dust);
+    border:1px solid var(--line); border-radius:9px; padding:9px 11px; width:100%;
+  }
+  .ed input:focus{outline:2px solid var(--violet); outline-offset:1px}
+  .ed input.en{font-size:14px}
+  .edbtns{display:flex; gap:8px; justify-content:flex-start}
+  .edsave{
+    font:inherit; font-weight:700; font-size:14px; color:#fff; background:var(--ink);
+    border:none; border-radius:99px; padding:7px 18px; cursor:pointer;
+  }
+  .edcancel{
+    font:inherit; font-size:14px; color:var(--ink2); background:none;
+    border:1.5px solid var(--line); border-radius:99px; padding:7px 15px; cursor:pointer;
+  }
+  .edsave:focus-visible,.edcancel:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
+  /* ── תחתית ── */
+  .foot{
+    margin-top:30px; display:flex; align-items:center; justify-content:space-between;
+    gap:12px; flex-wrap:wrap;
+  }
+  .fbtns{display:flex; gap:8px; flex-wrap:wrap}
+  .save{font-size:13.5px; color:var(--ink2); transition:color .2s}
+  .save.flash{color:var(--neon-p); font-weight:700}
+  button.reset{
+    font-family:inherit; font-size:14px; font-weight:700; color:var(--ink2);
+    background:none; border:1.5px solid var(--line); border-radius:99px;
+    padding:8px 18px; cursor:pointer;
+  }
+  button.reset:hover{color:var(--ink); border-color:var(--ink2)}
+  button.reset:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
+  #restoreBtn{display:none}
+  .editmode #restoreBtn{display:inline-block}
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important}
+  }
+  @media print{
+    .topbar,.foot,.ictl,li.addrow{display:none}
+    body{background:#fff}
+    .tabpane{display:block !important}
+    .ptitle{
+      display:block; font-family:"Karantina",sans-serif; font-weight:700;
+      font-size:32px; margin:26px 0 0;
+    }
+    section.grp{border-color:#bbb; break-inside:auto}
+    li.it{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="in">
+    <span class="name">רשימת האריזה</span>
+    <span class="tally"><b id="doneAll">0</b> / <span id="totAll">0</span> נארזו</span>
+    <button class="editbtn" id="editBtn">✎ עריכה</button>
+  </div>
+  <div class="tabs" role="tablist">
+    <button class="tabbtn on" data-tab="L" role="tab"><span class="nm">לוטם</span><span class="ct" data-ct="L">0 / 0</span></button>
+    <button class="tabbtn" data-tab="A" role="tab"><span class="nm">עתי</span><span class="ct" data-ct="A">0 / 0</span></button>
+    <button class="tabbtn" data-tab="S" role="tab"><span class="nm">ביחד</span><span class="ct" data-ct="S">0 / 0</span></button>
+  </div>
+  <div class="wire"><i id="wireAll"></i></div>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <h1>אורזים אל<br><span class="glow">האבק והניאון</span></h1>
+  </div>
+
+  <div class="tabpane on" data-tab="L" id="pane-L"></div>
+  <div class="tabpane" data-tab="A" id="pane-A"></div>
+  <div class="tabpane" data-tab="S" id="pane-S"></div>
+
+  <div class="foot">
+    <div class="fbtns">
+      <button class="reset" id="resetBtn">לאפס סימונים</button>
+      <button class="reset" id="restoreBtn">שחזור הרשימה המקורית</button>
+    </div>
+    <span class="save" id="saveNote">ההתקדמות נשמרת אוטומטית</span>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var KEY = 'pack-usa-2026-v3';
+  var OLDKEY = 'pack-usa-2026-v2';
+  var NAMES = {L:'לוטם', A:'עתי', S:'ביחד'};
+  var TITLES = {L:'האריזה של לוטם', A:'האריזה של עתי', S:'ביחד — ציוד משותף, קניות וסידורים'};
+  var ORDER = {L:['tro','big','pbm'], A:['tro','big','pbm'], S:['rem','gear','camp','wal','amz']};
+  var SEC = {
+    tro:{i:'👜', t:'טרולי + תיק אישי', s:'עולה למטוס · עד 8 ק״ג'},
+    big:{i:'🧳', t:'מזוודה גדולה', s:'עד 23 ק״ג — לשקול לפני היציאה'},
+    pbm:{i:'🔥', t:'ציוד פלאיה אישי', s:'מתחלק בין המזוודות שלך'},
+    rem:{i:'✈️', t:'שבוע לפני הטיסה', s:'סידורים אחרונים — לא נארזים, אבל קריטיים'},
+    gear:{i:'🎒', t:'ציוד משותף מהבית', s:'אחד לזוג — מתחלק בין המזוודות'},
+    camp:{i:'⛺', t:'מזוודה שלישית — קמפינג', s:'אופציונלית אבל מומלצת · מזמינים מראש באתר אל על'},
+    wal:{i:'🛒', t:'וולמארט קרסון סיטי', s:'27.8 · כל מה שכבד, מתכלה, או אסור בטיסה'},
+    amz:{i:'📦', t:'אמזון לוקר + הום דיפו רינו', s:'מה שאין בוולמארט · לתזמן הגעה ל־25–27.8'}
+  };
+  var DEF = {
+    tro:[
+      {t:'דרכון + סריקה שמורה בענן'},
+      {t:'עותק אישי של תיקיית ההדפסות', n:'כרטיסים, Early Arrival, ESTA, שובר רכב, ביטוח — ביד, לא במזוודה'},
+      {t:'רישיון נהיגה ישראלי + רישיון בינלאומי'},
+      {t:'ארנק: שני כרטיסי אשראי שונים + מזומן בשטרות קטנים'},
+      {t:'טלפון + כבל + ראש מטען'},
+      {t:'מתאם לשקע אמריקאי'},
+      {t:'סוללת גיבוי 20,000mAh', n:'חייבת להיות בתא הנוסעים — אסורה בבטן המטוס'},
+      {t:'תרופות קבועות לכל הטיול + מרשם, באריזה מקורית'},
+      {t:'משקפי ראייה / עדשות + זוג רזרבי'},
+      {t:'אוזניות, כרית צוואר, אטמי אוזניים ומסכת שינה לטיסה'},
+      {t:'סווטשירט וגרביים חמות לטיסה'},
+      {t:'בקבוק מים ריק — ממלאים אחרי הבידוק'},
+      {t:'סט החלפה מלא: תחתונים, גרביים, חולצה', n:'ביטוח למקרה שמזוודה מתעכבת'},
+      {t:'בגדים ל־3 הלילות הראשונים בדרך', n:'ככה לא מפרקים מזוודות בכל מלון עד קרסון סיטי'},
+      {t:'חטיפים לטיסה + עט'},
+      {t:'ספר / קינדל'}
+    ],
+    big:[
+      {t:'תחתונים ×12 + גרביים ×12', n:'מתוכם 3 זוגות גרביים עבים ללילות', s:'בגדים'},
+      {t:'חולצות טי ×7–8', s:'בגדים'},
+      {t:'מכנסיים קצרים ×3', s:'בגדים'},
+      {t:'מכנסיים ארוכים ×2 — ג׳ינס + נוחים', s:'בגדים'},
+      {t:'פליז / סווטשירט עבה', s:'בגדים'},
+      {t:'ג׳קט חם (פאפר קל)', n:'לילות של ‎5–10° בפלאיה ובטאהו — לא ויכוח', s:'בגדים'},
+      {t:'מעיל רוח קל', s:'בגדים'},
+      {t:'בגד ים', n:'טאהו, בריכות מלון, ואולי מעיינות חמים בדרך', s:'בגדים'},
+      {t:'פיג׳מה חמה', s:'בגדים'},
+      {t:'אאוטפיט מסודר — ערבים בעיר וצילומי השקיעה בטאהו', n:'אם עושים את הרגע בלוגן שולס', s:'בגדים'},
+      {t:'נעלי הליכה / סניקרס סגורות', s:'נעליים'},
+      {t:'נעליים גבוהות / מגפיים לפלאיה', n:'האבק בסיסי (pH גבוה) ואוכל רגליים חשופות', s:'נעליים'},
+      {t:'סנדלים / כפכפים — גם למקלחות', s:'נעליים'},
+      {t:'תיק רחצה מלא: מברשת, משחה, דאודורנט, מסרק, שמפו מוצק', s:'רחצה וטיפוח'},
+      {t:'מגבת מיקרופייבר מהירת ייבוש', s:'רחצה וטיפוח'},
+      {t:'קרם לחות חזק + שפתון SPF', n:'האבק מייבש עור ושפתיים בטירוף', s:'רחצה וטיפוח'},
+      {t:'מוצרי היגיינה אישיים לכל התקופה', s:'רחצה וטיפוח'},
+      {t:'משקפי שמש ×2 — אחד רזרבי', s:'כללי'},
+      {t:'כובע רחב שוליים + כובע גרב ללילות', s:'כללי'},
+      {t:'באף / צעיף רב־תכליתי', s:'כללי'},
+      {t:'שקיות קומפרסיה ידניות לבגדים', s:'כללי'},
+      {t:'מנעול TSA למזוודה', s:'כללי'}
+    ],
+    pbm:[
+      {t:'משקפי אבק (גוגלס) ×2', n:'כהים ליום + שקופים ללילה. סופת אבק בלעדיהם = עיוורון זמני'},
+      {t:'בנדנות ×3–4'},
+      {t:'שלוקר (קמלבק) או בקבוק עם רצועה — תמיד על הגוף'},
+      {t:'כוס / ספל עם קרבינר', n:'בברים של העיר מוזגים רק לכלי שהבאת'},
+      {t:'פנס ראש'},
+      {t:'תאורת גוף ללילה: EL wire / שרשראות LED', n:'בלי אור אתם ״darkwad״ — בלתי נראים לאופניים ולארט־קארים'},
+      {t:'תיק צד קטן / פאוץ׳ ליום'},
+      {t:'תחפושות ובגדי פלאיה: פרוות צבעוניות, רשתות, טוטו, אביזרים', n:'בלי נצנצים חופשיים ובלי נוצות — זה MOOP שנשאר במדבר'},
+      {t:'אטמי אוזניים לשינה — כמה זוגות', n:'המוזיקה לא נגמרת אף פעם'},
+      {t:'מסכת שינה — השמש זורחת על האוהל ב־6:30'},
+      {t:'תכשיטים — רק כאלה שלא חבל עליהם', n:'את היקרים משאירים בבית'}
+    ],
+    rem:[
+      {t:'לוודא שאישורי ה־Early Arrival בתוקף לכניסה בשישי 28.8', n:'בלעדיהם אין כניסה לפני פתיחת השער הרשמית'},
+      {t:'להדפיס הכל על נייר: כרטיסי ברנינג מן, Vehicle Pass, Early Arrival, ESTA, שובר הרכב, פוליסת הביטוח', n:'בשער סורקים נייר — אין קליטה סלולרית בכניסה. שני עותקים!'},
+      {t:'להזמין את המזוודה השלישית מראש באתר אל על', n:'משמעותית זול יותר מאשר בדלפק בשדה'},
+      {t:'אמזון לוקר ברינו: לתזמן שהחבילות מגיעות 25–27.8', n:'חלון איסוף של 3 ימים בלבד'},
+      {t:'24.8: לשדרג את חבילת ה־Tello ל־5–10GB'},
+      {t:'לקבוע תור דיטיילינג ברינו ל־8–9.9', n:'‏Splash ‏775‑335‑6350 · Buggy Bath ‏775‑826‑6679'},
+      {t:'להוסיף LDW בדלפק Enterprise ב־LAX', n:'ה־CDW של הברוקר לא מכסה שמשות, צמיגים, גחון ודרכי עפר'},
+      {t:'לשקול את כל המזוודות בבית — עד 23 ק״ג לכל אחת'}
+    ],
+    gear:[
+      {t:'מסכות N95 — חבילה של 10+'},
+      {t:'פנס ראש רזרבי + סוללות'},
+      {t:'מפצל חשמל ישראלי קטן', n:'מתאם אחד למפצל = כל המכשירים נטענים יחד'},
+      {t:'מטען USB כפול לרכב + כבלים ארוכים', n:'לנסיעות הארוכות ברוג׳'},
+      {t:'שקיות זיפלוק עבות בכמה גדלים', n:'הגנת האבק של הטלפונים והאלקטרוניקה'},
+      {t:'מתנות קטנות מהארץ לחלוקה בפלאיה', n:'במבה, ביסלי, מדבקות, חמסות — תרבות ה־gifting תאהב את זה'},
+      {t:'GoPro / מצלמה + נרתיק אטום + כרטיסי זיכרון'},
+      {t:'משקל כף־יד למזוודות', n:'שווה זהב בדרך חזרה'},
+      {t:'טייפ ספורט / פלסטרים לשפשופים'},
+      {t:'ערכת תפירה קטנה לתיקוני תחפושות'}
+    ],
+    camp:[
+      {t:'האוהל — אחרי הקמת ניסיון בסלון', n:'לוודא שכל החלקים בפנים לפני שסוגרים'},
+      {t:'יריעת קרקע (גראונדשיט) לאוהל'},
+      {t:'טרפ נוסף — ״מבואה״ בכניסה לאוהל'},
+      {t:'שקי שינה ×2'},
+      {t:'כריות מתנפחות קטנות', n:'או קונים כריות זולות בוולמארט'},
+      {t:'חבלים, גיי־ליינים ומותחנים'},
+      {t:'שטיחון כניסה לאוהל — משאיר את האבק בחוץ'},
+      {t:'הפרוות והתחפושות הגדולות', n:'ממלאות את הנפח שנשאר במזוודה'},
+      {t:'שקיות ואקום ריקות גדולות', n:'לדחוס הכל — כולל הטופר — בדרך הביתה'},
+      {t:'שקילה אחרונה — עד 23 ק״ג'}
+    ],
+    wal:[
+      {t:'מים לשתייה: ‎30–35 גלון (‎115–130 ליטר)', n:'‏1.5 גלון לאדם ליום × 10 ימים × שניים — מיכלי 5 גלון', s:'מים ושתייה'},
+      {t:'ג׳ריקן רב־פעמי עם ברז', n:'תחנת מים נוחה במחנה — וחוזר איתכם הביתה', s:'מים ושתייה'},
+      {t:'אבקות אלקטרוליטים — Liquid I.V. / Gatorade', s:'מים ושתייה'},
+      {t:'אלכוהול לטעמכם + משהו נחמד לחלוק בברים', s:'מים ושתייה'},
+      {t:'צידנית גדולה ואיכותית', n:'קרח קונים כל יום ב־Arctica בתוך העיר', s:'אוכל ובישול'},
+      {t:'כירת גז קטנה + מיכלי גז', n:'אסור בטיסה — קונים אך ורק שם', s:'אוכל ובישול'},
+      {t:'סיר קטן + מחבת + כלי בישול בסיסיים', s:'אוכל ובישול'},
+      {t:'כלי אוכל רב־פעמיים: צלחות, כוסות, סכו״ם', n:'לא חד־פעמי — נהיה MOOP ברוח', s:'אוכל ובישול'},
+      {t:'שימורים: טונה, שעועית, תירס, מרקים', s:'אוכל ובישול'},
+      {t:'פסטה / אורז / קוסקוס מהיר', s:'אוכל ובישול'},
+      {t:'חטיפים, אגוזים, פירות יבשים, גרנולה', s:'אוכל ובישול'},
+      {t:'טורטיות / לחם + ממרחים', n:'חמאת בוטנים מחזיקה מעמד בחום', s:'אוכל ובישול'},
+      {t:'פירות וירקות קשים: תפוחים, תפוזים, גזר', s:'אוכל ובישול'},
+      {t:'קפה + דרך להכין אותו', n:'נמס או פילטרים + קומקום קמפינג', s:'אוכל ובישול'},
+      {t:'מלח, שמן, תבלינים בסיסיים', s:'אוכל ובישול'},
+      {t:'טופר ויסקו (Memory Foam) בגודל Queen', n:'השדרוג הכי משתלם בפלאיה — ובבית אחר כך', s:'שינה ונוחות'},
+      {t:'שקיות ואקום ענקיות לטופר', s:'שינה ונוחות'},
+      {t:'כיסאות קמפינג ×2', n:'בסוף — תרומה במקום פח', s:'שינה ונוחות'},
+      {t:'שולחן מתקפל קטן', s:'שינה ונוחות'},
+      {t:'שמיכת פליז נוספת ללילות הקרים', s:'שינה ונוחות'},
+      {t:'פנס קמפינג LED לאוהל', s:'תאורה וחשמל'},
+      {t:'מחרוזת אורות סולארית לקישוט המחנה', s:'תאורה וחשמל'},
+      {t:'המון סוללות AA / AAA', s:'תאורה וחשמל'},
+      {t:'פנסי אופניים — לבן קדימה, אדום אחורה', s:'תאורה וחשמל'},
+      {t:'מגבונים לחים ×6+ חבילות', n:'זו המקלחת היומית שלכם', s:'היגיינת פלאיה'},
+      {t:'חומץ לבן — בקבוק גדול', n:'שטיפת רגליים בחומץ מהול מנטרלת את האבק הבסיסי', s:'היגיינת פלאיה'},
+      {t:'קערה מתקפלת / דלי לשטיפת רגליים', s:'היגיינת פלאיה'},
+      {t:'מקלחת שמש — שקית שחורה 20 ליטר', s:'היגיינת פלאיה'},
+      {t:'מיכל אטום למי אפור', n:'אסור לשפוך שום נוזל על הפלאיה — הכל נאסף', s:'היגיינת פלאיה'},
+      {t:'קרם הגנה 50 ×2 + ג׳ל אלוורה', s:'היגיינת פלאיה'},
+      {t:'נייר טואלט + טישו', n:'גיבוי אישי לשירותים הציבוריים', s:'היגיינת פלאיה'},
+      {t:'אלכוג׳ל גדול + בקבוקון לתיק הצד', s:'היגיינת פלאיה'},
+      {t:'טיפות עיניים (סליין) + תרסיס אף', n:'האבק מייבש את כל הריריות — תודו לי אחר כך', s:'היגיינת פלאיה'},
+      {t:'וזלין / אקווהפור לעקבים סדוקים', s:'היגיינת פלאיה'},
+      {t:'שקיות זבל עבות (Contractor)', n:'Leave No Trace — כל הזבל חוזר איתכם מהעיר', s:'ניקיון וארגון'},
+      {t:'אזיקונים + דקט־טייפ + חבל', n:'שלישיית הקסם שמתקנת הכל בפלאיה', s:'ניקיון וארגון'},
+      {t:'‏2–3 ארגזי פלסטיק עם מכסה', n:'אוכל וציוד מסודרים ברכב; בסוף — לתרומה', s:'ניקיון וארגון'},
+      {t:'יריעות ניילון / סדינים זולים לרפד את פנים הרוג׳', n:'לפני העמסת הציוד המאובק — שומר על הרכב עד הדיטיילינג', s:'ניקיון וארגון'},
+      {t:'מטליות מיקרופייבר + מברשת יד ויעה קטנים', s:'ניקיון וארגון'},
+      {t:'משפך למילוי מים', s:'ניקיון וארגון'},
+      {t:'בקבוק ספריי — קירור בחום וניקוי אבק', s:'ניקיון וארגון'},
+      {t:'אופני קרוזר ×2 + מנעולים', n:'העיר ענקית — בלי אופניים מפספסים חצי ממנה. בסוף: תרומה ל־Reno Bike Project', s:'אופניים וכלים'},
+      {t:'סלסלה לאופניים', s:'אופניים וכלים'},
+      {t:'משאבת יד קטנה + ערכת פנצ׳רים', s:'אופניים וכלים'},
+      {t:'מולטיטול / פלייר + מברג', s:'אופניים וכלים'},
+      {t:'פטיש כבד ליתדות', s:'אופניים וכלים'},
+      {t:'ערכת עזרה ראשונה מלאה', s:'בריאות'},
+      {t:'משככי כאבים, אנטיהיסטמין, אימודיום, תרופת צינון', s:'בריאות'}
+    ],
+    amz:[
+      {t:'יתדות פלאיה: ברגי Lag ‏10–12 אינץ׳ + דיסקיות, או Rebar candy canes', n:'יתדות רגילות של אוהל לא מחזיקות ברוחות — הום דיפו'},
+      {t:'כדורי טניס / פקקים לכיסוי קצוות יתדות בולטים', n:'שלא תקרעו רגל בלילה'},
+      {t:'רשת הצללה Aluminet ‏40% + קליפסים', n:'צל מעל האוהל = היכולת לישון אחרי 8 בבוקר'},
+      {t:'רצועות ראצ׳ט לעיגון ההצללה'},
+      {t:'EL wire איכותי — אם לא השגתם בארץ'},
+      {t:'מאוורר USB קטן לאוהל'}
+    ]
+  };
+
+  var state = null, byId = {}, editing = null, activeTab = 'L';
+  var localTs = 0;
+  var TABKEY = 'pack-usa-2026-tab';
+  var SAVETXT = 'ההתקדמות נשמרת אוטומטית';
+  // שכבת אחסון: window.storage של Claude (משותף לשניכם) / localStorage (פר מכשיר) / זיכרון בלבד
+  var store = (function(){
+    var w = (typeof window.storage !== 'undefined') && window.storage && typeof window.storage.get === 'function';
+    if (w) return {
+      mode: 'claude',
+      get: function(k, shared){
+        try {
+          return window.storage.get(k, !!shared).then(function(r){ return r ? r.value : null; }).catch(function(){ return null; });
+        } catch(e){ return Promise.resolve(null); }
+      },
+      set: function(k, v, shared){
+        try {
+          return window.storage.set(k, v, !!shared).catch(function(){});
+        } catch(e){ return Promise.resolve(); }
+      }
+    };
+    var l = false;
+    try { window.localStorage.setItem('__pk_t', '1'); window.localStorage.removeItem('__pk_t'); l = true; } catch(e){ l = false; }
+    if (l) return {
+      mode: 'local',
+      get: function(k){ var v = null; try { v = window.localStorage.getItem(k); } catch(e){} return Promise.resolve(v); },
+      set: function(k, v){ try { window.localStorage.setItem(k, v); } catch(e){} return Promise.resolve(); }
+    };
+    return { mode: 'none', get: function(){ return Promise.resolve(null); }, set: function(){ return Promise.resolve(); } };
+  })();
+  var SHARED = store.mode === 'claude';
+  var saveNote = document.getElementById('saveNote');
+  var saveTimer = null, flashTimer = null;
+
+  function esc(x){
+    return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function newId(){
+    return 'u' + Date.now().toString(36) + Math.floor(Math.random()*46656).toString(36);
+  }
+  function seedTab(p){
+    var out = {};
+    ORDER[p].forEach(function(k){
+      out[k] = DEF[k].map(function(it, i){
+        return {id: p + '-' + k + '-' + i, t: it.t, n: it.n || '', s: it.s || '', d: false};
+      });
+    });
+    return out;
+  }
+  function seedAll(){
+    var lists = {};
+    ['L','A','S'].forEach(function(p){ lists[p] = seedTab(p); });
+    return lists;
+  }
+  function buildIndex(){
+    byId = {};
+    ['L','A','S'].forEach(function(p){
+      ORDER[p].forEach(function(k){
+        (state.lists[p][k] || []).forEach(function(it){ byId[it.id] = {it: it, p: p, k: k}; });
+      });
+    });
+  }
+
+  function edHTML(it){
+    return '<li class="edrow"><div class="ed">' +
+      '<input class="etx" placeholder="שם הפריט" value="' + (it ? esc(it.t) : '') + '">' +
+      '<input class="en" placeholder="הערה קטנה (לא חובה)" value="' + (it ? esc(it.n) : '') + '">' +
+      '<div class="edbtns"><button class="edsave">שמירה</button><button class="edcancel">ביטול</button></div>' +
+      '</div></li>';
+  }
+
+  function secHTML(p, k){
+    var m = SEC[k], items = state.lists[p][k];
+    var done = items.filter(function(x){ return x.d; }).length;
+    var h = '<section class="grp' + (items.length && done === items.length ? ' full' : '') + '" data-person="' + p + '" data-k="' + k + '">';
+    h += '<div class="gh"><h2>' + m.i + ' ' + esc(m.t) + '<small>' + esc(m.s) + '</small></h2><span class="cnt">' + done + ' / ' + items.length + '</span></div>';
+    h += '<div class="gbar"><i style="width:' + (items.length ? done / items.length * 100 : 0) + '%"></i></div><ul>';
+    var last = '';
+    items.forEach(function(it){
+      if (it.s && it.s !== last){ h += '<h3 class="sub">' + esc(it.s) + '</h3>'; last = it.s; }
+      if (editing && editing.p === p && editing.k === k && editing.id === it.id){ h += edHTML(it); return; }
+      h += '<li class="it' + (it.d ? ' done' : '') + '">' +
+        '<label><input type="checkbox" data-id="' + it.id + '"' + (it.d ? ' checked' : '') + '>' +
+        '<span class="box"></span><span class="tx">' + esc(it.t) +
+        (it.n ? '<small>' + esc(it.n) + '</small>' : '') + '</span></label>' +
+        '<span class="ictl"><button class="ed" data-id="' + it.id + '" title="עריכה">✎</button>' +
+        '<button class="del" data-id="' + it.id + '" title="מחיקה">✕</button></span></li>';
+    });
+    if (editing && editing.p === p && editing.k === k && editing.id === null){ h += edHTML(null); }
+    else { h += '<li class="addrow" data-p="' + p + '" data-k="' + k + '">+ הוספת פריט</li>'; }
+    h += '</ul></section>';
+    return h;
+  }
+
+  function paneHTML(p){
+    return '<div class="ptitle">' + esc(TITLES[p]) + '</div>' +
+      ORDER[p].map(function(k){ return secHTML(p, k); }).join('');
+  }
+
+  function focusEditor(scope){
+    var f = (scope || document).querySelector('.ed .etx');
+    if (f){ f.focus(); }
+  }
+
+  function render(){
+    ['L','A','S'].forEach(function(p){
+      document.getElementById('pane-' + p).innerHTML = paneHTML(p);
+    });
+    buildIndex();
+    updateTops();
+    focusEditor();
+  }
+
+  function rerenderSec(p, k){
+    var el = document.querySelector('section.grp[data-person="' + p + '"][data-k="' + k + '"]');
+    if (el){
+      var tmp = document.createElement('div');
+      tmp.innerHTML = secHTML(p, k);
+      var fresh = tmp.firstChild;
+      el.replaceWith(fresh);
+      buildIndex();
+      updateTops();
+      focusEditor(fresh);
+    } else {
+      render();
+    }
+  }
+
+  function updateTops(){
+    var all = 0, tot = 0;
+    ['L','A','S'].forEach(function(p){
+      var d = 0, t = 0;
+      ORDER[p].forEach(function(k){
+        state.lists[p][k].forEach(function(it){ t++; if (it.d) d++; });
+      });
+      all += d; tot += t;
+      var ct = document.querySelector('.ct[data-ct="' + p + '"]');
+      if (ct) ct.textContent = d + ' / ' + t;
+    });
+    document.getElementById('doneAll').textContent = all;
+    document.getElementById('totAll').textContent = tot;
+    document.getElementById('wireAll').style.width = (tot ? all / tot * 100 : 0) + '%';
+  }
+
+  function persist(){
+    if (store.mode === 'none') return;
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){
+      saveTimer = null;
+      localTs = Date.now();
+      var payload = JSON.stringify({v: 3, ts: localTs, lists: state.lists});
+      store.set(KEY, payload, true).then(function(){
+        saveNote.textContent = 'נשמר ✓';
+        saveNote.classList.add('flash');
+        clearTimeout(flashTimer);
+        flashTimer = setTimeout(function(){
+          saveNote.textContent = SAVETXT;
+          saveNote.classList.remove('flash');
+        }, 1400);
+      });
+    }, 400);
+  }
+
+  function saveEditor(fromEl){
+    if (!editing) return;
+    var row = fromEl.closest('.edrow');
+    if (!row) return;
+    var tx = row.querySelector('.etx').value.trim();
+    var n = row.querySelector('.en').value.trim();
+    var ed = editing;
+    if (!tx){ editing = null; rerenderSec(ed.p, ed.k); return; }
+    if (ed.id){
+      var r = byId[ed.id];
+      if (r){ r.it.t = tx; r.it.n = n; }
+    } else {
+      var arr = state.lists[ed.p][ed.k];
+      var hasSubs = arr.some(function(x){ return x.s; });
+      arr.push({id: newId(), t: tx, n: n, s: hasSubs ? 'הוספות שלכם' : '', d: false});
+    }
+    editing = null;
+    rerenderSec(ed.p, ed.k);
+    persist();
+  }
+
+  function setTabUI(){
+    document.querySelectorAll('.tabbtn').forEach(function(b){ b.classList.toggle('on', b.dataset.tab === activeTab); });
+    document.querySelectorAll('.tabpane').forEach(function(pn){ pn.classList.toggle('on', pn.dataset.tab === activeTab); });
+  }
+  function setTab(t){
+    if (editing){ editing = null; render(); }
+    activeTab = t;
+    setTabUI();
+    store.set(TABKEY, t, false);
+    window.scrollTo(0, 0);
+  }
+
+  document.addEventListener('change', function(ev){
+    var cb = ev.target;
+    if (!cb || cb.type !== 'checkbox' || !cb.dataset.id) return;
+    var r = byId[cb.dataset.id];
+    if (!r) return;
+    r.it.d = cb.checked;
+    rerenderSec(r.p, r.k);
+    persist();
+  });
+
+  document.addEventListener('click', function(ev){
+    var t = ev.target;
+    if (!t) return;
+    var add = t.closest ? t.closest('.addrow') : null;
+    if (add){
+      editing = {p: add.dataset.p, k: add.dataset.k, id: null};
+      rerenderSec(editing.p, editing.k);
+      return;
+    }
+    if (t.classList.contains('ed') && t.dataset.id){
+      var r = byId[t.dataset.id];
+      if (!r) return;
+      var prev = editing;
+      editing = {p: r.p, k: r.k, id: r.it.id};
+      if (prev && (prev.p !== r.p || prev.k !== r.k)) rerenderSec(prev.p, prev.k);
+      rerenderSec(r.p, r.k);
+      return;
+    }
+    if (t.classList.contains('del') && t.dataset.id){
+      var r2 = byId[t.dataset.id];
+      if (!r2) return;
+      if (!confirm('למחוק את ״' + r2.it.t + '״?')) return;
+      var arr = state.lists[r2.p][r2.k];
+      var ix = arr.indexOf(r2.it);
+      if (ix > -1) arr.splice(ix, 1);
+      if (editing && editing.id === r2.it.id) editing = null;
+      rerenderSec(r2.p, r2.k);
+      persist();
+      return;
+    }
+    if (t.classList.contains('edsave')){ saveEditor(t); return; }
+    if (t.classList.contains('edcancel')){
+      var ed = editing; editing = null;
+      if (ed) rerenderSec(ed.p, ed.k);
+      return;
+    }
+  });
+
+  document.addEventListener('keydown', function(ev){
+    if (!editing) return;
+    if (ev.key === 'Enter' && ev.target && (ev.target.classList.contains('etx') || ev.target.classList.contains('en'))){
+      ev.preventDefault();
+      saveEditor(ev.target);
+    }
+    if (ev.key === 'Escape'){
+      var ed = editing; editing = null;
+      rerenderSec(ed.p, ed.k);
+    }
+  });
+
+  document.querySelectorAll('.tabbtn').forEach(function(b){
+    b.addEventListener('click', function(){ setTab(b.dataset.tab); });
+  });
+
+  document.getElementById('editBtn').addEventListener('click', function(){
+    document.body.classList.toggle('editmode');
+    if (!document.body.classList.contains('editmode') && editing){
+      var ed = editing; editing = null;
+      rerenderSec(ed.p, ed.k);
+    }
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    if (!confirm('לנקות את כל הסימונים ברשימה של ״' + NAMES[activeTab] + '״? הפריטים עצמם יישארו.')) return;
+    ORDER[activeTab].forEach(function(k){
+      state.lists[activeTab][k].forEach(function(it){ it.d = false; });
+    });
+    editing = null;
+    render();
+    persist();
+  });
+
+  document.getElementById('restoreBtn').addEventListener('click', function(){
+    if (!confirm('לשחזר את הרשימה המקורית של ״' + NAMES[activeTab] + '״? פריטים שהוספתם או ערכתם בטאב הזה יימחקו, והסימונים בו יתאפסו.')) return;
+    state.lists[activeTab] = seedTab(activeTab);
+    editing = null;
+    render();
+    persist();
+  });
+
+  // משיכת עדכונים מהצד השני (רק במצב משותף של Claude)
+  function pullRemote(){
+    if (!SHARED || !state || editing || saveTimer) return;
+    store.get(KEY, true).then(function(v){
+      if (!v) return;
+      var rem = null;
+      try { rem = JSON.parse(v); } catch(e){ return; }
+      if (!rem || !rem.lists) return;
+      var rts = rem.ts || 0;
+      if (rts <= localTs) return;
+      if (editing || saveTimer) return;
+      localTs = rts;
+      state.lists = rem.lists;
+      buildIndex();
+      render();
+      setTabUI();
+    });
+  }
+  function startPoll(){
+    if (!SHARED) return;
+    setInterval(pullRemote, 12000);
+    document.addEventListener('visibilitychange', function(){
+      if (!document.hidden) pullRemote();
+    });
+  }
+
+  function finish(){
+    render();
+    setTabUI();
+    startPoll();
+  }
+  function boot(lists){
+    state = {v: 3, lists: lists};
+    buildIndex();
+    store.get(TABKEY, false).then(function(t){
+      if (t === 'A' || t === 'S' || t === 'L') activeTab = t;
+      finish();
+    });
+  }
+  function seedFromV2(ov){
+    var lists = seedAll();
+    if (ov){
+      try {
+        var old2 = JSON.parse(ov) || {};
+        var idx = {};
+        ['L','A','S'].forEach(function(p){
+          ORDER[p].forEach(function(k){
+            lists[p][k].forEach(function(it){ idx[it.id] = it; });
+          });
+        });
+        Object.keys(old2).forEach(function(id){
+          if (old2[id] === true && idx[id]) idx[id].d = true;
+        });
+      } catch(e){}
+    }
+    return lists;
+  }
+  function init(){
+    if (store.mode === 'none'){
+      SAVETXT = 'שמירה זמנית — בתצוגה הזו השינויים לא נשמרים';
+      saveNote.textContent = SAVETXT;
+      boot(seedAll());
+      return;
+    }
+    SAVETXT = SHARED ? 'מסתנכרן בין שניכם אוטומטית' : 'נשמר במכשיר הזה אוטומטית';
+    saveNote.textContent = SAVETXT;
+    store.get(KEY, true).then(function(v){
+      var loaded = null;
+      if (v){ try { loaded = JSON.parse(v); } catch(e){} }
+      if (loaded && loaded.lists){
+        localTs = loaded.ts || 0;
+        boot(loaded.lists);
+        return;
+      }
+      if (!SHARED){
+        boot(seedAll());
+        persist();
+        return;
+      }
+      // אין עדיין מצב משותף — מעבירים מהשמירה האישית הקודמת
+      store.get(KEY, false).then(function(pv){
+        var old3 = null;
+        if (pv){ try { old3 = JSON.parse(pv); } catch(e){} }
+        if (old3 && old3.lists){
+          boot(old3.lists);
+          persist();
+          return;
+        }
+        store.get(OLDKEY, false).then(function(ov){
+          boot(seedFromV2(ov));
+          persist();
+        });
+      });
+    });
+  }
+  init();
+})();
+</script>
+</body>
+</html>
