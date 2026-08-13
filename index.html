@@ -119,7 +119,10 @@
   h3.sub{
     margin:14px 10px 2px; font-size:12.5px; font-weight:700; color:var(--violet);
     letter-spacing:.14em;
+    display:flex; align-items:center; gap:2px;
   }
+  .sub .edb{width:30px; height:30px}
+  .sub .edb svg{width:13px; height:13px}
   /* ── פריטים ── */
   li.it{border-radius:12px; display:flex; align-items:stretch}
   li.it label{
@@ -171,12 +174,16 @@
   .gh .edb{width:38px; height:38px}
   /* כותרת במצב עריכה: הכרטיס תופס את כל רוחב הכותרת */
   .gh.ghed{display:block; cursor:default}
-  li.addrow{
-    margin:8px 8px 2px; padding:9px 12px; border:1.5px dashed var(--line);
+  li.addbar{display:flex; gap:8px; margin:8px 8px 2px; list-style:none}
+  .addrow,.addcat{
+    font-family:inherit; padding:9px 12px; border:1.5px dashed var(--line);
     border-radius:12px; color:var(--ink2); font-weight:500; font-size:14.5px;
-    cursor:pointer; list-style:none;
+    cursor:pointer; background:none;
   }
-  li.addrow:hover{color:var(--ink); border-color:var(--ink2)}
+  .addrow{flex:1 1 auto}
+  .addcat{flex:0 0 auto; white-space:nowrap}
+  .addrow:hover,.addcat:hover{color:var(--ink); border-color:var(--ink2)}
+  .addrow:focus-visible,.addcat:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
   li.edrow{list-style:none; padding:6px 2px}
   .ed{
     display:flex; flex-direction:column; gap:8px;
@@ -274,7 +281,7 @@
     *{transition:none !important}
   }
   @media print{
-    .topbar,.foot,.ictl,li.addrow,.toast{display:none}
+    .topbar,.foot,.ictl,li.addbar,.edb,.toast{display:none}
     body{background:#fff}
     .tabpane{display:block !important}
     .ptitle{
@@ -677,23 +684,21 @@
     var d = (editing && editing.draft) || null;
     var vt = d ? d.t : (it ? it.t : '');
     var vn = d ? d.n : (it ? it.n : '');
-    // בוחר קטגוריה: הקטגוריות הקיימות + יצירת חדשה. "ללא קטגוריה" מוצעת רק
-    // בקבוצות שיש בהן פריטים לא מסווגים - בקבוצה שכולה מסווגת אין דרך חזרה החוצה
+    // בוחר קטגוריה: הקטגוריות הקיימות בלבד. "ללא קטגוריה" מוצעת רק בקבוצות
+    // שיש בהן פריטים לא מסווגים - בקבוצה שכולה מסווגת אין דרך חזרה החוצה
     var items = state.lists[p][k];
     var cats = secCats(p, k);
     var hasPlain = items.some(function(x){ return !x.s; });
     var plainAllowed = hasPlain || !cats.length;
     var vs = d && d.s !== undefined ? d.s : (it ? (it.s || '') : (plainAllowed ? '' : cats[0]));
-    var showNew = vs === '__new__';
+    // קטגוריה שזה עתה נוצרה מכפתור "+ קטגוריה" עוד לא קיימת בפריטים - מציגים אותה כאופציה
+    if (vs && cats.indexOf(vs) === -1) cats = [vs].concat(cats);
     var opts = '';
     if (plainAllowed) opts += '<option value=""' + (vs === '' ? ' selected' : '') + '>ללא קטגוריה</option>';
     cats.forEach(function(c){
       opts += '<option value="' + esc(c) + '"' + (c === vs ? ' selected' : '') + '>' + esc(c) + '</option>';
     });
-    opts += '<option value="__new__"' + (showNew ? ' selected' : '') + '>+ קטגוריה חדשה</option>';
-    var catHTML = '<label class="fl">קטגוריה<select class="ecat">' + opts + '</select>' +
-      '<input class="encat" placeholder="שם הקטגוריה החדשה"' + (showNew ? '' : ' hidden') +
-      ' value="' + esc(d && d.ns ? d.ns : '') + '"></label>';
+    var catHTML = '<label class="fl">קטגוריה<select class="ecat">' + opts + '</select></label>';
     return '<li class="edrow"><div class="ed">' +
       '<label class="fl">שם הפריט' +
       '<input class="etx" value="' + esc(vt) + '"></label>' +
@@ -703,6 +708,31 @@
       '<div class="edbtns"><button class="edsave">שמירה</button><button class="edcancel">ביטול</button>' +
       (it ? '<button class="eddel" data-id="' + esc(it.id) + '">מחיקה</button>' : '') +
       '</div></div></li>';
+  }
+
+  // עורך מיני לשם קטגוריה - משמש גם ליצירה וגם לשינוי שם
+  function catEdHTML(v){
+    return '<div class="ed"><label class="fl">שם הקטגוריה' +
+      '<input class="etx" value="' + esc(v) + '"></label>' +
+      '<div class="edbtns"><button class="edsave">שמירה</button><button class="edcancel">ביטול</button></div></div>';
+  }
+
+  // שינוי שם קטגוריה; אם שם היעד כבר קיים בקבוצה - הפריטים מתמזגים לסופו
+  function renameCat(p, k, oldName, newName){
+    var arr = state.lists[p][k];
+    var targetExists = arr.some(function(x){ return x.s === newName; });
+    if (!targetExists){
+      arr.forEach(function(x){ if (x.s === oldName) x.s = newName; });
+      return;
+    }
+    var moved = arr.filter(function(x){ return x.s === oldName; });
+    for (var i = arr.length - 1; i >= 0; i--){
+      if (arr[i].s === oldName) arr.splice(i, 1);
+    }
+    moved.forEach(function(x){
+      x.s = newName;
+      insertByCat(arr, x);
+    });
   }
 
   function secHTML(p, k){
@@ -733,7 +763,17 @@
     h += '<div class="gbody" id="body-' + key + '"><div class="gin"><ul>';
     var last = '';
     items.forEach(function(it){
-      if (it.s && it.s !== last){ h += '<h3 class="sub">' + esc(it.s) + '</h3>'; last = it.s; }
+      if (it.s && it.s !== last){
+        if (editing && editing.catEdit === it.s && editing.p === p && editing.k === k){
+          // כותרת הקטגוריה במצב עריכת שם
+          var dc = editing.draft || null;
+          h += '<li class="edrow">' + catEdHTML(dc ? dc.t : it.s) + '</li>';
+        } else {
+          h += '<h3 class="sub"><span>' + esc(it.s) + '</span>' +
+            '<button class="edb sce" data-p="' + p + '" data-k="' + k + '" data-cat="' + esc(it.s) + '" aria-label="עריכת הקטגוריה ״' + esc(it.s) + '״">' + PEN + '</button></h3>';
+        }
+        last = it.s;
+      }
       if (editing && editing.p === p && editing.k === k && editing.id === it.id){ h += edHTML(it, p, k); return; }
       h += '<li class="it' + (it.d ? ' done' : '') + '">' +
         '<label><input type="checkbox" data-id="' + it.id + '"' + (it.d ? ' checked' : '') + '>' +
@@ -741,8 +781,16 @@
         (it.n ? '<small>' + esc(it.n) + '</small>' : '') + '</span></label>' +
         '<span class="ictl"><button class="edb" data-id="' + it.id + '" aria-label="עריכת ״' + esc(it.t) + '״">' + PEN + '</button></span></li>';
     });
-    if (editing && editing.p === p && editing.k === k && editing.id === null){ h += edHTML(null, p, k); }
-    else { h += '<li class="addrow" data-p="' + p + '" data-k="' + k + '">+ הוספת פריט</li>'; }
+    if (editing && editing.p === p && editing.k === k && editing.cat){
+      // יצירת קטגוריה חדשה: קודם שם, ואחרי שמירה נפתח עורך הפריט הראשון שלה
+      var dn = editing.draft || null;
+      h += '<li class="edrow">' + catEdHTML(dn ? dn.t : '') + '</li>';
+    } else if (editing && editing.p === p && editing.k === k && editing.id === null){
+      h += edHTML(null, p, k);
+    } else {
+      h += '<li class="addbar"><button class="addrow" data-p="' + p + '" data-k="' + k + '">+ הוספת פריט</button>' +
+        '<button class="addcat" data-p="' + p + '" data-k="' + k + '">+ קטגוריה</button></li>';
+    }
     h += '</ul></div></div></section>';
     return h;
   }
@@ -786,8 +834,8 @@
     var card = document.querySelector('.ed');
     if (!card) return;
     var tx = card.querySelector('.etx'), n = card.querySelector('.en');
-    var sc = card.querySelector('.ecat'), nc = card.querySelector('.encat');
-    editing.draft = {t: tx ? tx.value : '', n: n ? n.value : '', s: sc ? sc.value : undefined, ns: nc ? nc.value : ''};
+    var sc = card.querySelector('.ecat');
+    editing.draft = {t: tx ? tx.value : '', n: n ? n.value : '', s: sc ? sc.value : undefined};
   }
 
   function render(){
@@ -849,7 +897,9 @@
     var card = fromEl.closest('.ed');
     if (!card) return;
     var tx = card.querySelector('.etx').value.trim();
-    var n = card.querySelector('.en').value.trim();
+    // לעורך המיני של קטגוריה אין שדה הערה
+    var enEl = card.querySelector('.en');
+    var n = enEl ? enEl.value.trim() : '';
     var ed = editing;
     // שמירה על שדה ריק סוגרת את העורך - זו גם הדרך לסיים רצף הוספות
     if (!tx){ editing = null; rerenderSec(ed.p, ed.k); return; }
@@ -859,45 +909,39 @@
       if (tx === SEC[ed.k].t && n === SEC[ed.k].s) delete state.titles[key];
       else state.titles[key] = {t: tx, s: n};
       editing = null;
+    } else if (ed.cat){
+      // קטגוריה חדשה נולדת רק עם הפריט הראשון שלה: פותחים עורך פריט
+      // כשהקטגוריה כבר מסומנת, ועדיין אין מה לשמור
+      editing = {p: ed.p, k: ed.k, id: null, draft: {t: '', n: '', s: tx}};
+      rerenderSec(ed.p, ed.k);
+      return;
+    } else if (ed.catEdit){
+      if (tx === ed.catEdit){ editing = null; rerenderSec(ed.p, ed.k); return; }
+      renameCat(ed.p, ed.k, ed.catEdit, tx);
+      editing = null;
     } else if (ed.id){
       var r = byId[ed.id];
       if (r){
         r.it.t = tx;
         r.it.n = n;
         var sel = card.querySelector('.ecat');
-        if (sel){
-          var ns = sel.value;
-          if (ns === '__new__'){
-            // קטגוריה חדשה; שם ריק = נשארים בקטגוריה הנוכחית
-            var nn = card.querySelector('.encat');
-            ns = (nn && nn.value.trim()) || r.it.s || '';
-          }
-          if (ns !== (r.it.s || '')){
-            // שינוי קטגוריה: מוציאים את הפריט ממקומו ומכניסים בסוף הקטגוריה החדשה
-            var arr0 = state.lists[ed.p][ed.k];
-            var ix0 = arr0.indexOf(r.it);
-            if (ix0 > -1) arr0.splice(ix0, 1);
-            r.it.s = ns;
-            insertByCat(arr0, r.it);
-          }
+        if (sel && sel.value !== (r.it.s || '')){
+          // שינוי קטגוריה: מוציאים את הפריט ממקומו ומכניסים בסוף הקטגוריה החדשה
+          var arr0 = state.lists[ed.p][ed.k];
+          var ix0 = arr0.indexOf(r.it);
+          if (ix0 > -1) arr0.splice(ix0, 1);
+          r.it.s = sel.value;
+          insertByCat(arr0, r.it);
         }
       }
       editing = null;
     } else {
       var arr = state.lists[ed.p][ed.k];
       var sel2 = card.querySelector('.ecat');
-      var s2 = '';
-      if (sel2){
-        s2 = sel2.value;
-        if (s2 === '__new__'){
-          var nn2 = card.querySelector('.encat');
-          s2 = (nn2 && nn2.value.trim()) || '';
-        }
-      }
-      var item = {id: newId(), t: tx, n: n, s: s2, d: false};
+      var item = {id: newId(), t: tx, n: n, s: sel2 ? sel2.value : '', d: false};
       insertByCat(arr, item);
       // הוספה רציפה: שורה ריקה חדשה שזוכרת את הקטגוריה שנבחרה
-      editing = {p: ed.p, k: ed.k, id: null, draft: {t: '', n: '', s: item.s, ns: ''}};
+      editing = {p: ed.p, k: ed.k, id: null, draft: {t: '', n: '', s: item.s}};
     }
     rerenderSec(ed.p, ed.k);
     persist();
@@ -917,17 +961,7 @@
 
   document.addEventListener('change', function(ev){
     var cb = ev.target;
-    if (!cb) return;
-    // בחירת "+ קטגוריה חדשה" חושפת את שדה השם
-    if (cb.classList && cb.classList.contains('ecat')){
-      var nn = cb.parentElement.querySelector('.encat');
-      if (nn){
-        nn.hidden = cb.value !== '__new__';
-        if (!nn.hidden) nn.focus();
-      }
-      return;
-    }
-    if (cb.type !== 'checkbox' || !cb.dataset.id) return;
+    if (!cb || cb.type !== 'checkbox' || !cb.dataset.id) return;
     var r = byId[cb.dataset.id];
     if (!r) return;
     r.it.d = cb.checked;
@@ -946,6 +980,12 @@
       rerenderSec(editing.p, editing.k);
       return;
     }
+    var ac = t.closest('.addcat');
+    if (ac){
+      editing = {p: ac.dataset.p, k: ac.dataset.k, cat: true, draft: null};
+      rerenderSec(editing.p, editing.k);
+      return;
+    }
     // closest ולא בדיקת target ישירה - כי הקליק יכול לפגוע ב־SVG שבתוך הכפתור
     var eb = t.closest('button.edb');
     if (eb){
@@ -953,6 +993,9 @@
       if (eb.classList.contains('ghe')){
         // עיפרון של כותרת קבוצה
         editing = {p: eb.dataset.p, k: eb.dataset.k, sec: true, draft: null};
+      } else if (eb.classList.contains('sce')){
+        // עיפרון של קטגוריה
+        editing = {p: eb.dataset.p, k: eb.dataset.k, catEdit: eb.dataset.cat, draft: null};
       } else {
         // עיפרון של פריט
         var r = byId[eb.dataset.id];
@@ -995,7 +1038,7 @@
 
   document.addEventListener('keydown', function(ev){
     if (!editing) return;
-    if (ev.key === 'Enter' && ev.target && (ev.target.classList.contains('etx') || ev.target.classList.contains('en') || ev.target.classList.contains('encat'))){
+    if (ev.key === 'Enter' && ev.target && (ev.target.classList.contains('etx') || ev.target.classList.contains('en'))){
       ev.preventDefault();
       saveEditor(ev.target);
     }
