@@ -85,9 +85,14 @@
     margin-top:22px; overflow:hidden;
   }
   .gh{
-    display:flex; align-items:baseline; justify-content:space-between; gap:10px;
-    padding:16px 18px 10px;
+    display:flex; align-items:center; gap:12px;
+    padding:16px 18px 10px; cursor:pointer;
+    transition:padding-bottom .3s ease;
   }
+  section.grp.fold .gh{padding-bottom:16px}
+  .gh h2{flex:1; min-width:0}
+  .ghb{all:unset; display:block; cursor:pointer}
+  .ghb:focus-visible{outline:3px solid var(--violet); outline-offset:3px; border-radius:6px}
   .gh h2{
     margin:0; font-family:"Karantina",sans-serif; font-weight:700;
     font-size:30px; line-height:1.05; letter-spacing:.01em;
@@ -100,8 +105,14 @@
     background:var(--wire); -webkit-background-clip:text; background-clip:text; color:transparent;
   }
   .gh .cnt{font-size:14px; color:var(--ink2); font-weight:700; white-space:nowrap}
-  .gbar{height:3px; margin:0 18px; background:#ECEAE2; border-radius:2px; overflow:hidden}
-  .gbar i{display:block; height:100%; width:0%; background:var(--wire); transition:width .3s ease}
+  .chev{display:flex; color:var(--ink2); flex:0 0 auto}
+  .chev svg{width:20px; height:20px; transition:transform .3s ease}
+  section.grp:not(.fold) .chev svg{transform:rotate(180deg)}
+  .gh:hover .chev{color:var(--ink)}
+  /* קיפול: אנימציית grid מ־1fr ל־0fr - בלי למדוד גבהים ב־JS */
+  .gbody{display:grid; grid-template-rows:1fr; transition:grid-template-rows .3s ease}
+  .gbody > .gin{overflow:hidden; min-height:0}
+  section.grp.fold .gbody{grid-template-rows:0fr}
   section.grp ul{list-style:none; margin:6px 0 0; padding:4px 10px 12px}
   h3.sub{
     margin:14px 10px 2px; font-size:12.5px; font-weight:700; color:var(--violet);
@@ -240,6 +251,8 @@
       font-size:32px; margin:26px 0 0;
     }
     section.grp{border-color:#bbb; break-inside:auto}
+    section.grp.fold .gbody{grid-template-rows:1fr}
+    .chev{display:none}
     li.it{break-inside:avoid}
   }
 </style>
@@ -454,6 +467,9 @@
   var state = null, byId = {}, editing = null, activeTab = 'L';
   var localTs = 0;
   var TABKEY = 'pack-usa-2026-tab';
+  var FOLDKEY = 'pack-usa-2026-fold';
+  // אילו קבוצות מקופלות, לפי מפתח "טאב-קבוצה". נשמר פר מכשיר - זו העדפת תצוגה
+  var fold = {};
   var SAVETXT = 'ההתקדמות נשמרת אוטומטית';
   // שכבת אחסון: window.storage של Claude (משותף לשניכם) / localStorage (פר מכשיר) / זיכרון בלבד
   var store = (function(){
@@ -515,6 +531,8 @@
 
   // אייקון עיפרון (SVG) לכפתור העריכה שבכל שורה
   var PEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>';
+  // שברון האקורדיון: מצויר כלפי מטה, ומסתובב 180° ב־CSS כשהקבוצה פתוחה
+  var CHEV = '<span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>';
 
   function edHTML(it){
     // אם יש טיוטה שנשמרה בזמן רינדור מחדש - היא גוברת על הערכים המקוריים
@@ -534,9 +552,12 @@
   function secHTML(p, k){
     var m = SEC[k], items = state.lists[p][k];
     var done = items.filter(function(x){ return x.d; }).length;
-    var h = '<section class="grp' + (items.length && done === items.length ? ' full' : '') + '" data-person="' + p + '" data-k="' + k + '">';
-    h += '<div class="gh"><h2>' + m.i + ' ' + esc(m.t) + '<small>' + esc(m.s) + '</small></h2><span class="cnt">' + done + ' / ' + items.length + '</span></div>';
-    h += '<div class="gbar"><i style="width:' + (items.length ? done / items.length * 100 : 0) + '%"></i></div><ul>';
+    var key = p + '-' + k, folded = !!fold[key];
+    var h = '<section class="grp' + (items.length && done === items.length ? ' full' : '') + (folded ? ' fold' : '') + '" data-person="' + p + '" data-k="' + k + '">';
+    // הכותרת היא button אמיתי בתוך h2 - נגיש למקלדת ולקורא מסך, וכל שטח ה־gh לחיץ
+    h += '<div class="gh"><h2><button class="ghb" type="button" aria-expanded="' + (folded ? 'false' : 'true') + '" aria-controls="body-' + key + '">' + m.i + ' ' + esc(m.t) + '<small>' + esc(m.s) + '</small></button></h2>' +
+      '<span class="cnt">' + done + ' / ' + items.length + '</span>' + CHEV + '</div>';
+    h += '<div class="gbody" id="body-' + key + '"><div class="gin"><ul>';
     var last = '';
     items.forEach(function(it){
       if (it.s && it.s !== last){ h += '<h3 class="sub">' + esc(it.s) + '</h3>'; last = it.s; }
@@ -549,8 +570,25 @@
     });
     if (editing && editing.p === p && editing.k === k && editing.id === null){ h += edHTML(null); }
     else { h += '<li class="addrow" data-p="' + p + '" data-k="' + k + '">+ הוספת פריט</li>'; }
-    h += '</ul></section>';
+    h += '</ul></div></div></section>';
     return h;
+  }
+
+  function toggleFold(secEl){
+    var p = secEl.dataset.person, k = secEl.dataset.k, key = p + '-' + k;
+    var folded = !secEl.classList.contains('fold');
+    if (folded) fold[key] = true; else delete fold[key];
+    store.set(FOLDKEY, JSON.stringify(fold), false);
+    // קיפול קבוצה שנערכת כרגע סוגר את העורך - ואז חייבים רינדור מחדש
+    if (folded && editing && editing.p === p && editing.k === k){
+      editing = null;
+      rerenderSec(p, k);
+      return;
+    }
+    // בלי רינדור מחדש: מחליפים class על האלמנט החי כדי שהאנימציה תרוץ
+    secEl.classList.toggle('fold', folded);
+    var b = secEl.querySelector('.ghb');
+    if (b) b.setAttribute('aria-expanded', folded ? 'false' : 'true');
   }
 
   function paneHTML(p){
@@ -724,6 +762,13 @@
       if (ed) rerenderSec(ed.p, ed.k);
       return;
     }
+    // לחיצה בכל שטח כותרת הקבוצה מקפלת או פותחת אותה
+    var gh = t.closest('.gh');
+    if (gh){
+      var secEl = gh.closest('section.grp');
+      if (secEl) toggleFold(secEl);
+      return;
+    }
   });
 
   document.addEventListener('keydown', function(ev){
@@ -851,6 +896,9 @@
     buildIndex();
     store.get(TABKEY, false).then(function(t){
       if (t === 'A' || t === 'S' || t === 'L') activeTab = t;
+      return store.get(FOLDKEY, false);
+    }).then(function(fv){
+      if (fv){ try { fold = JSON.parse(fv) || {}; } catch(e){ fold = {}; } }
       finish();
     });
   }
