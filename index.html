@@ -296,7 +296,7 @@
   body.vroute #view-route{display:block}
   body.vroute #view-packing{display:none}
   /* ── טאב המסלול ── */
-  .rwrap{max-width:1100px; margin:0 auto; padding:26px 18px 60px}
+  .rwrap{max-width:680px; margin:0 auto; padding:26px 18px 60px}
   .gmaps{
     display:inline-flex; align-items:center; gap:7px; margin:2px 0 14px;
     font-size:14px; font-weight:700; color:var(--ink2); text-decoration:none;
@@ -307,28 +307,55 @@
   @media (max-width: 480px){
     .topbar .name{font-size:19px}
   }
-  .routegrid{display:flex; gap:16px; align-items:stretch; margin-top:10px}
-  .rpanel{flex:0 0 330px; max-height:72vh; overflow-y:auto; padding-inline-end:4px}
-  .rmap-box{flex:1 1 auto; min-width:0}
   .rmap{
-    height:72vh; border-radius:var(--r); border:1px solid var(--line);
+    height:min(60vh, 500px); margin-top:10px;
+    border-radius:var(--r); border:1px solid var(--line);
     background:var(--card); overflow:hidden;
   }
-  .dcard{
-    background:var(--card); border:1px solid var(--line); border-radius:12px;
-    padding:11px 14px; margin-bottom:10px; cursor:pointer;
-    transition:border-color .15s ease, box-shadow .15s ease;
+  /* ── לוח השנה של המסלול ── */
+  .cal{
+    margin-top:14px; background:var(--card); border:1px solid var(--line);
+    border-radius:var(--r); overflow:hidden;
   }
-  .dcard:hover{border-color:var(--ink2)}
-  .dcard.on{border-color:var(--violet); box-shadow:0 0 8px rgba(110,90,224,.25)}
-  .dcard:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
-  .dcard .dd{font-size:12.5px; color:var(--ink2); font-weight:700}
-  .dcard .dn{
-    font-family:"Karantina","Heebo",sans-serif; font-weight:700; font-size:25px; line-height:1.1;
-    display:flex; align-items:center; gap:7px;
+  .calcap{
+    padding:10px 14px 7px; border-bottom:1px solid var(--line);
+    font-family:"Karantina","Heebo",sans-serif; font-weight:700; font-size:23px; line-height:1;
   }
-  .dcard .drv{font-size:12.5px; color:var(--violet); font-weight:700; margin-top:1px}
-  .dcard .nt{font-size:13px; color:var(--ink2); line-height:1.45; margin-top:3px}
+  .calhead{display:grid; grid-template-columns:repeat(7,1fr); border-bottom:1px solid var(--line)}
+  .calhead div{padding:6px 2px; text-align:center; font-size:11px; font-weight:700; color:var(--ink2)}
+  .calweek{display:grid; grid-template-columns:repeat(7,1fr); border-bottom:1px solid var(--line)}
+  .calweek:last-child{border-bottom:none}
+  .calday{grid-row:1; min-height:80px; min-width:0; padding:4px 4px 5px; border-inline-start:1px solid var(--line)}
+  .calday:first-child{border-inline-start:none}
+  .calday.out{background:rgba(219,216,205,.22)}
+  /* ימים שהפס הבוער עובר בהם שומרים לו נתיב בתחתית התא */
+  .calday.bpad{padding-bottom:32px}
+  .dnum{font-size:10.5px; font-weight:700; color:var(--ink2)}
+  .chip{
+    margin-top:3px; background:var(--dust); border:1px solid var(--line);
+    border-radius:7px; padding:2px 5px; cursor:pointer; overflow:hidden;
+  }
+  .chip:hover{border-color:var(--ink2)}
+  .chip:focus-visible{outline:2px solid var(--violet); outline-offset:1px}
+  .chip .cn{display:block; font-size:10.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .chip .cd{display:block; font-size:9.5px; color:var(--violet); font-weight:700}
+  /* הפס הרציף של ברנינג מן - אירוע רב יומי על גבי הרשת */
+  .burnbar{
+    grid-row:1; align-self:end; height:22px; margin-bottom:5px; z-index:1;
+    background:var(--wire); color:#fff; font-size:10.5px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; gap:4px;
+    white-space:nowrap; overflow:hidden; cursor:pointer;
+    box-shadow:0 0 9px rgba(233,57,140,.5);
+  }
+  .burnbar.bs{border-start-start-radius:99px; border-end-start-radius:99px; margin-inline-start:5px}
+  .burnbar.be{border-start-end-radius:99px; border-end-end-radius:99px; margin-inline-end:5px}
+  .burnbar:focus-visible{outline:2px solid var(--neon-c); outline-offset:1px}
+  @media (max-width: 520px){
+    .rmap{height:46vh}
+    .calday{min-height:66px}
+    .chip .cn{font-size:9.5px}
+    .chip .cd{display:none}
+  }
   /* מרקרים */
   .mk{
     width:30px; height:30px; border-radius:50%; background:var(--ink); color:#fff;
@@ -355,12 +382,6 @@
   .rmap-fallback{
     height:100%; display:flex; align-items:center; justify-content:center;
     color:var(--ink2); font-size:14.5px; text-align:center; padding:20px;
-  }
-  @media (max-width: 768px){
-    .routegrid{flex-direction:column}
-    .rpanel{flex:none; max-height:none; overflow:visible; order:2; padding-inline-end:0}
-    .rmap-box{order:1}
-    .rmap{height:52vh}
   }
   @media (prefers-reduced-motion: reduce){
     *{transition:none !important}
@@ -406,10 +427,8 @@
       <h1 id="routeHero">שורפים<br><span class="glow">את הכביש</span></h1>
     </div>
     <a class="gmaps" href="https://maps.app.goo.gl/avzwcXWqtKTci4RA9" target="_blank" rel="noopener">🧭 המסלול המלא בגוגל מפות</a>
-    <div class="routegrid">
-      <div class="rpanel" id="rpanel"></div>
-      <div class="rmap-box"><div class="rmap" id="rmap" dir="ltr"></div></div>
-    </div>
+    <div class="rmap" id="rmap" dir="ltr"></div>
+    <div class="cal" id="cal"></div>
   </div>
 </div>
 
@@ -1415,27 +1434,72 @@
     (groups[key] = groups[key] || []).push(st);
   });
 
-  function driveHTML(st){
-    if (!st.drive) return '';
-    var h = '<div class="drv">נסיעה: <bdi>' + escR(st.drive) + '</bdi>';
-    if (st.drive2) h += ' · ' + escR(st.drive2.t) + ' <bdi>' + escR(st.drive2.v) + '</bdi>';
-    return h + '</div>';
-  }
-  function cardHTML(st){
-    return '<div class="dcard" data-n="' + st.n + '" tabindex="0" role="button">' +
-      '<div class="dd">' + escR(st.date) + (st.wd ? ' · יום ' + escR(st.wd) : '') + '</div>' +
-      '<div class="dn"><span>' + st.emoji + '</span><bdi>' + escR(st.name) + '</bdi></div>' +
-      driveHTML(st) +
-      (st.note ? '<div class="nt">' + escR(st.note) + '</div>' : '') +
+  var stByN = {};
+  TRIP.forEach(function(s){ stByN[s.n] = s; });
+
+  // רשת הלוח: שלושה שבועות, ראשון עד שבת, עם ימי התחנות והפס הבוער.
+  // burn מסמן ימים שהפס הרציף של ברנינג מן עובר בהם
+  var CAL_WEEKS = [
+    [{d:23,m:8},{d:24,m:8},{d:25,m:8,st:[1,2]},{d:26,m:8,st:[3]},{d:27,m:8,st:[4]},{d:28,m:8,st:[5],burn:1},{d:29,m:8,burn:1}],
+    [{d:30,m:8,burn:1},{d:31,m:8,burn:1},{d:1,m:9,burn:1},{d:2,m:9,burn:1},{d:3,m:9,burn:1},{d:4,m:9,burn:1},{d:5,m:9,burn:1}],
+    [{d:6,m:9,st:[6],burn:1},{d:7,m:9,st:[7]},{d:8,m:9,st:[8]},{d:9,m:9,st:[9]},{d:10,m:9,st:[10]},{d:11,m:9},{d:12,m:9}]
+  ];
+
+  function chipHTML(s){
+    return '<div class="chip" data-n="' + s.n + '" tabindex="0" role="button"' +
+      (s.note ? ' title="' + escR(s.note) + '"' : '') + '>' +
+      '<span class="cn">' + s.emoji + ' <bdi>' + escR(s.name) + '</bdi></span>' +
+      (s.drive ? '<span class="cd"><bdi>' + escR(s.drive) + '</bdi></span>' : '') +
       '</div>';
   }
-  document.getElementById('rpanel').innerHTML = TRIP.map(cardHTML).join('');
+  function calHTML(){
+    var h = '<div class="calcap">אוגוסט - ספטמבר 2026</div>';
+    h += '<div class="calhead"><div>א</div><div>ב</div><div>ג</div><div>ד</div><div>ה</div><div>ו</div><div>ש</div></div>';
+    CAL_WEEKS.forEach(function(week){
+      h += '<div class="calweek">';
+      var burnStart = 0, burnEnd = 0, hasSpanStart = false, hasSpanEnd = false;
+      week.forEach(function(day, i){
+        var col = i + 1;
+        if (day.burn){
+          if (!burnStart) burnStart = col;
+          burnEnd = col;
+          if (day.m === 8 && day.d === 28) hasSpanStart = true;
+          if (day.m === 9 && day.d === 6) hasSpanEnd = true;
+        }
+        var out = (day.m === 8 && day.d < 25) || (day.m === 9 && day.d > 10);
+        // מיקום עמודה מפורש - בלי זה תאים שהפס תופס את העמודות שלהם
+        // נדחפים לעמודות משתמעות והשורה נשברת
+        h += '<div class="calday' + (out ? ' out' : '') + (day.burn ? ' bpad' : '') + '" style="grid-column:' + col + '">' +
+          '<div class="dnum">' + (day.m === 9 && day.d === 1 ? '1.9' : day.d) + '</div>';
+        (day.st || []).forEach(function(n){ h += chipHTML(stByN[n]); });
+        h += '</div>';
+      });
+      if (burnStart){
+        // תווית מלאה רק במקטע רחב; מקטעים קצרים נשארים פס זוהר נקי,
+        // כי ביום ההגעה כבר יש צ'יפ עם השם
+        var label = (burnEnd - burnStart + 1) >= 3 ? '🔥 <bdi>Black Rock City</bdi>' : '';
+        h += '<div class="burnbar' + (hasSpanStart ? ' bs' : '') + (hasSpanEnd ? ' be' : '') +
+          '" data-n="5" tabindex="0" role="button" aria-label="Black Rock City" style="grid-column:' + burnStart + ' / ' + (burnEnd + 1) + '">' +
+          label + '</div>';
+      }
+      h += '</div>';
+    });
+    return h;
+  }
+  document.getElementById('cal').innerHTML = calHTML();
 
   var map = null, markerByN = {}, routeBounds = null, didFirstFit = false;
   function popupHTML(list){
     return list.map(function(st){
+      var drv = '';
+      if (st.drive){
+        drv = '<div class="pp-date">נסיעה: <bdi>' + escR(st.drive) + '</bdi>';
+        if (st.drive2) drv += ' · ' + escR(st.drive2.t) + ' <bdi>' + escR(st.drive2.v) + '</bdi>';
+        drv += '</div>';
+      }
       return '<div class="pp-name">' + st.emoji + ' <bdi>' + escR(st.name) + '</bdi></div>' +
         '<div class="pp-date">' + escR(st.date) + (st.wd ? ' · יום ' + escR(st.wd) : '') + '</div>' +
+        drv +
         (st.note ? '<div class="pp-note">' + escR(st.note) + '</div>' : '');
     }).join('<hr style="border:none;border-top:1px solid var(--line);margin:8px 0">');
   }
@@ -1479,28 +1543,27 @@
     return true;
   }
 
-  // לחיצה על כרטיס יום מטיסה את המפה לתחנה ופותחת את הפופאפ שלה
-  function activateCard(c){
-    document.querySelectorAll('.dcard.on').forEach(function(x){ x.classList.remove('on'); });
-    c.classList.add('on');
+  // לחיצה על יום בלוח מטיסה את המפה לתחנה ופותחת את הפופאפ שלה,
+  // ומוודאת שהמפה בכלל על המסך (רלוונטי במובייל, כשהלוח מתחתיה)
+  function flyToStation(n){
     if (!map) return;
-    var st = null;
-    TRIP.forEach(function(s){ if (s.n === +c.dataset.n) st = s; });
+    var st = stByN[n];
     if (!st) return;
+    document.querySelector('.rmap').scrollIntoView({behavior: 'smooth', block: 'nearest'});
     map.flyTo([st.lat, st.lng], 10, {duration: 1.1});
     var mk = markerByN[st.n];
     if (mk) setTimeout(function(){ mk.openPopup(); }, 1150);
   }
-  document.getElementById('rpanel').addEventListener('click', function(ev){
-    var c = ev.target.closest ? ev.target.closest('.dcard') : null;
-    if (c) activateCard(c);
+  document.getElementById('cal').addEventListener('click', function(ev){
+    var c = ev.target.closest ? ev.target.closest('.chip, .burnbar') : null;
+    if (c) flyToStation(+c.dataset.n);
   });
-  document.getElementById('rpanel').addEventListener('keydown', function(ev){
+  document.getElementById('cal').addEventListener('keydown', function(ev){
     if (ev.key !== 'Enter' && ev.key !== ' ') return;
-    var c = ev.target.closest ? ev.target.closest('.dcard') : null;
+    var c = ev.target.closest ? ev.target.closest('.chip, .burnbar') : null;
     if (!c) return;
     ev.preventDefault();
-    activateCard(c);
+    flyToStation(+c.dataset.n);
   });
 
   // ── שני הטאבים הראשיים; המצב נשמר ב־hash כדי שרענון ישאיר אותך באותו טאב ──
