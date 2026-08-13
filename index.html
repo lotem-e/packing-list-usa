@@ -185,17 +185,14 @@
     background:#fff; border:1.5px solid var(--violet); border-radius:12px; padding:12px;
     box-shadow:0 0 10px rgba(110,90,224,.18);
   }
-  .ed input{
-    font:inherit; color:var(--ink); background:var(--dust);
+  /* גודל גופן של 16px הוא חובה בשדות קלט: מתחת לזה ספארי באייפון
+     מקרב את התצוגה אוטומטית בכל נגיעה בשדה */
+  .ed input,.ed select{
+    font-family:inherit; font-size:16px; font-weight:500;
+    color:var(--ink); background:var(--dust);
     border:1px solid var(--line); border-radius:9px; padding:9px 11px; width:100%;
   }
-  .ed input:focus{outline:2px solid var(--violet); outline-offset:1px}
-  .ed input.en{font-size:14px}
-  .ed select{
-    font:inherit; color:var(--ink); background:var(--dust);
-    border:1px solid var(--line); border-radius:9px; padding:9px 11px; width:100%;
-  }
-  .ed select:focus{outline:2px solid var(--violet); outline-offset:1px}
+  .ed input:focus,.ed select:focus{outline:2px solid var(--violet); outline-offset:1px}
   .ed label.fl{
     display:flex; flex-direction:column; gap:5px;
     font-size:12px; font-weight:700; color:var(--ink2);
@@ -974,9 +971,14 @@
       ORDER[p].map(function(k){ return secHTML(p, k); }).join('');
   }
 
+  // ממוקדים בשדה רק כשהמשתמש פתח עורך בעצמו. בלי הדגל הזה כל רינדור מחדש
+  // (סימון פריט, משיכת עדכון) היה גוזל את הפוקוס ומקפיץ את המקלדת במובייל
+  var focusNext = false;
   function focusEditor(scope){
+    if (!focusNext) return;
     var f = (scope || document).querySelector('.ed .etx');
     if (f){
+      focusNext = false;
       f.focus();
       // מציב את הסמן בסוף הטקסט הקיים במקום לסמן את כולו
       var L = f.value.length;
@@ -1070,6 +1072,7 @@
       // קטגוריה חדשה נולדת רק עם הפריט הראשון שלה: פותחים עורך פריט
       // כשהקטגוריה כבר מסומנת, ועדיין אין מה לשמור
       editing = {p: ed.p, k: ed.k, id: null, draft: {t: '', n: '', s: tx}};
+      focusNext = true;
       rerenderSec(ed.p, ed.k);
       return;
     } else if (ed.catEdit){
@@ -1164,12 +1167,14 @@
     var add = t.closest('.addrow');
     if (add){
       editing = {p: add.dataset.p, k: add.dataset.k, id: null, draft: null};
+      focusNext = true;
       rerenderSec(editing.p, editing.k);
       return;
     }
     var ac = t.closest('.addcat');
     if (ac){
       editing = {p: ac.dataset.p, k: ac.dataset.k, cat: true, draft: null};
+      focusNext = true;
       rerenderSec(editing.p, editing.k);
       return;
     }
@@ -1189,6 +1194,7 @@
         if (!r) return;
         editing = {p: r.p, k: r.k, id: r.it.id, draft: null};
       }
+      focusNext = true;
       if (prev && (prev.p !== editing.p || prev.k !== editing.k)) rerenderSec(prev.p, prev.k);
       rerenderSec(editing.p, editing.k);
       return;
