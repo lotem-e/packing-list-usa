@@ -189,6 +189,11 @@
   }
   .ed input:focus{outline:2px solid var(--violet); outline-offset:1px}
   .ed input.en{font-size:14px}
+  .ed select{
+    font:inherit; color:var(--ink); background:var(--dust);
+    border:1px solid var(--line); border-radius:9px; padding:9px 11px; width:100%;
+  }
+  .ed select:focus{outline:2px solid var(--violet); outline-offset:1px}
   .ed label.fl{
     display:flex; flex-direction:column; gap:5px;
     font-size:12px; font-weight:700; color:var(--ink2);
@@ -348,11 +353,10 @@
     }
   } catch(e){ sb = null; }
   var TITLES = {L:'האריזה של לוטם', A:'האריזה של עתי', S:'ביחד — ציוד משותף, קניות וסידורים'};
-  var ORDER = {L:['tro','big','pbm'], A:['tro','big','pbm'], S:['rem','gear','camp','wal','amz']};
+  var ORDER = {L:['tro','big'], A:['tro','big'], S:['rem','gear','camp','wal','amz']};
   var SEC = {
     tro:{i:'👜', t:'טרולי + תיק אישי', s:'עולה למטוס · עד 8 ק״ג'},
     big:{i:'🧳', t:'מזוודה גדולה', s:'עד 23 ק״ג — לשקול לפני היציאה'},
-    pbm:{i:'🔥', t:'ציוד פלאיה אישי', s:'מתחלק בין המזוודות שלך'},
     rem:{i:'✈️', t:'שבוע לפני הטיסה', s:'סידורים אחרונים — לא נארזים, אבל קריטיים'},
     gear:{i:'🎒', t:'ציוד משותף מהבית', s:'אחד לזוג — מתחלק בין המזוודות'},
     camp:{i:'⛺', t:'מזוודה שלישית — קמפינג', s:'אופציונלית אבל מומלצת · מזמינים מראש באתר אל על'},
@@ -400,20 +404,18 @@
       {t:'כובע רחב שוליים + כובע גרב ללילות', s:'כללי'},
       {t:'באף / צעיף רב־תכליתי', s:'כללי'},
       {t:'שקיות קומפרסיה ידניות לבגדים', s:'כללי'},
-      {t:'מנעול TSA למזוודה', s:'כללי'}
-    ],
-    pbm:[
-      {t:'משקפי אבק (גוגלס) ×2', n:'כהים ליום + שקופים ללילה. סופת אבק בלעדיהם = עיוורון זמני'},
-      {t:'בנדנות ×3–4'},
-      {t:'שלוקר (קמלבק) או בקבוק עם רצועה — תמיד על הגוף'},
-      {t:'כוס / ספל עם קרבינר', n:'בברים של העיר מוזגים רק לכלי שהבאת'},
-      {t:'פנס ראש'},
-      {t:'תאורת גוף ללילה: EL wire / שרשראות LED', n:'בלי אור אתם ״darkwad״ — בלתי נראים לאופניים ולארט־קארים'},
-      {t:'תיק צד קטן / פאוץ׳ ליום'},
-      {t:'תחפושות ובגדי פלאיה: פרוות צבעוניות, רשתות, טוטו, אביזרים', n:'בלי נצנצים חופשיים ובלי נוצות — זה MOOP שנשאר במדבר'},
-      {t:'אטמי אוזניים לשינה — כמה זוגות', n:'המוזיקה לא נגמרת אף פעם'},
-      {t:'מסכת שינה — השמש זורחת על האוהל ב־6:30'},
-      {t:'תכשיטים — רק כאלה שלא חבל עליהם', n:'את היקרים משאירים בבית'}
+      {t:'מנעול TSA למזוודה', s:'כללי'},
+      {t:'משקפי אבק (גוגלס) ×2', n:'כהים ליום + שקופים ללילה. סופת אבק בלעדיהם = עיוורון זמני', s:'ציוד פלאיה'},
+      {t:'בנדנות ×3–4', s:'ציוד פלאיה'},
+      {t:'שלוקר (קמלבק) או בקבוק עם רצועה — תמיד על הגוף', s:'ציוד פלאיה'},
+      {t:'כוס / ספל עם קרבינר', n:'בברים של העיר מוזגים רק לכלי שהבאת', s:'ציוד פלאיה'},
+      {t:'פנס ראש', s:'ציוד פלאיה'},
+      {t:'תאורת גוף ללילה: EL wire / שרשראות LED', n:'בלי אור אתם ״darkwad״ — בלתי נראים לאופניים ולארט־קארים', s:'ציוד פלאיה'},
+      {t:'תיק צד קטן / פאוץ׳ ליום', s:'ציוד פלאיה'},
+      {t:'תחפושות ובגדי פלאיה: פרוות צבעוניות, רשתות, טוטו, אביזרים', n:'בלי נצנצים חופשיים ובלי נוצות — זה MOOP שנשאר במדבר', s:'ציוד פלאיה'},
+      {t:'אטמי אוזניים לשינה — כמה זוגות', n:'המוזיקה לא נגמרת אף פעם', s:'ציוד פלאיה'},
+      {t:'מסכת שינה — השמש זורחת על האוהל ב־6:30', s:'ציוד פלאיה'},
+      {t:'תכשיטים — רק כאלה שלא חבל עליהם', n:'את היקרים משאירים בבית', s:'ציוד פלאיה'}
     ],
     rem:[
       {t:'לוודא שאישורי ה־Early Arrival בתוקף לכניסה בשישי 28.8', n:'בלעדיהם אין כניסה לפני פתיחת השער הרשמית'},
@@ -593,6 +595,43 @@
     ['L','A','S'].forEach(function(p){ lists[p] = seedTab(p); });
     return lists;
   }
+  // מיגרציה (2026-08): "ציוד פלאיה אישי" הפך מקבוצה עצמאית לקטגוריה בתוך המזוודה
+  // הגדולה. נתונים ישנים מהענן או מהמטמון עדיין מכילים pbm - מקפלים אותו פנימה.
+  // בטוח להריץ שוב ושוב: אחרי הריצה הראשונה אין יותר pbm
+  function normalizeLists(lists){
+    if (!lists) return lists;
+    ['L','A'].forEach(function(p){
+      var tab = lists[p];
+      if (tab && tab.pbm){
+        if (!tab.big) tab.big = [];
+        tab.pbm.forEach(function(it){
+          it.s = 'ציוד פלאיה';
+          tab.big.push(it);
+        });
+        delete tab.pbm;
+      }
+    });
+    return lists;
+  }
+
+  // רשימת הקטגוריות של קבוצה, לפי סדר ההופעה שלהן בפריטים
+  function secCats(p, k){
+    var seen = [], have = {};
+    state.lists[p][k].forEach(function(it){
+      if (it.s && !have[it.s]){ have[it.s] = 1; seen.push(it.s); }
+    });
+    return seen;
+  }
+
+  // הכנסת פריט בסוף הקטגוריה שלו, כדי שהקיבוץ בתצוגה יישאר רציף
+  function insertByCat(arr, item){
+    if (!item.s){ arr.push(item); return; }
+    var at = -1;
+    for (var i = 0; i < arr.length; i++){ if (arr[i].s === item.s) at = i; }
+    if (at === -1) arr.push(item);
+    else arr.splice(at + 1, 0, item);
+  }
+
   function buildIndex(){
     byId = {};
     ['L','A','S'].forEach(function(p){
@@ -607,16 +646,28 @@
   // שברון האקורדיון: מצויר כלפי מטה, ומסתובב 180° ב־CSS כשהקבוצה פתוחה
   var CHEV = '<span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>';
 
-  function edHTML(it){
+  function edHTML(it, p, k){
     // אם יש טיוטה שנשמרה בזמן רינדור מחדש - היא גוברת על הערכים המקוריים
     var d = (editing && editing.draft) || null;
     var vt = d ? d.t : (it ? it.t : '');
     var vn = d ? d.n : (it ? it.n : '');
+    // בוחר קטגוריה - רק בקבוצות שיש בהן קטגוריות
+    var cats = secCats(p, k);
+    var catHTML = '';
+    if (cats.length){
+      var vs = d && d.s !== undefined ? d.s : (it && it.s ? it.s : cats[0]);
+      catHTML = '<label class="fl">קטגוריה<select class="ecat">' +
+        cats.map(function(c){
+          return '<option value="' + esc(c) + '"' + (c === vs ? ' selected' : '') + '>' + esc(c) + '</option>';
+        }).join('') +
+        '</select></label>';
+    }
     return '<li class="edrow"><div class="ed">' +
       '<label class="fl">שם הפריט' +
       '<input class="etx" value="' + esc(vt) + '"></label>' +
       '<label class="fl">הערה קטנה - לא חובה' +
       '<input class="en" value="' + esc(vn) + '"></label>' +
+      catHTML +
       '<div class="edbtns"><button class="edsave">שמירה</button><button class="edcancel">ביטול</button>' +
       (it ? '<button class="eddel" data-id="' + esc(it.id) + '">מחיקה</button>' : '') +
       '</div></div></li>';
@@ -651,14 +702,14 @@
     var last = '';
     items.forEach(function(it){
       if (it.s && it.s !== last){ h += '<h3 class="sub">' + esc(it.s) + '</h3>'; last = it.s; }
-      if (editing && editing.p === p && editing.k === k && editing.id === it.id){ h += edHTML(it); return; }
+      if (editing && editing.p === p && editing.k === k && editing.id === it.id){ h += edHTML(it, p, k); return; }
       h += '<li class="it' + (it.d ? ' done' : '') + '">' +
         '<label><input type="checkbox" data-id="' + it.id + '"' + (it.d ? ' checked' : '') + '>' +
         '<span class="box"></span><span class="tx">' + esc(it.t) +
         (it.n ? '<small>' + esc(it.n) + '</small>' : '') + '</span></label>' +
         '<span class="ictl"><button class="edb" data-id="' + it.id + '" aria-label="עריכת ״' + esc(it.t) + '״">' + PEN + '</button></span></li>';
     });
-    if (editing && editing.p === p && editing.k === k && editing.id === null){ h += edHTML(null); }
+    if (editing && editing.p === p && editing.k === k && editing.id === null){ h += edHTML(null, p, k); }
     else { h += '<li class="addrow" data-p="' + p + '" data-k="' + k + '">+ הוספת פריט</li>'; }
     h += '</ul></div></div></section>';
     return h;
@@ -702,8 +753,8 @@
     if (!editing) return;
     var card = document.querySelector('.ed');
     if (!card) return;
-    var tx = card.querySelector('.etx'), n = card.querySelector('.en');
-    editing.draft = {t: tx ? tx.value : '', n: n ? n.value : ''};
+    var tx = card.querySelector('.etx'), n = card.querySelector('.en'), sc = card.querySelector('.ecat');
+    editing.draft = {t: tx ? tx.value : '', n: n ? n.value : '', s: sc ? sc.value : undefined};
   }
 
   function render(){
@@ -777,14 +828,27 @@
       editing = null;
     } else if (ed.id){
       var r = byId[ed.id];
-      if (r){ r.it.t = tx; r.it.n = n; }
+      if (r){
+        r.it.t = tx;
+        r.it.n = n;
+        var sel = card.querySelector('.ecat');
+        if (sel && sel.value !== r.it.s){
+          // שינוי קטגוריה: מוציאים את הפריט ממקומו ומכניסים בסוף הקטגוריה החדשה
+          var arr0 = state.lists[ed.p][ed.k];
+          var ix0 = arr0.indexOf(r.it);
+          if (ix0 > -1) arr0.splice(ix0, 1);
+          r.it.s = sel.value;
+          insertByCat(arr0, r.it);
+        }
+      }
       editing = null;
     } else {
       var arr = state.lists[ed.p][ed.k];
-      var hasSubs = arr.some(function(x){ return x.s; });
-      arr.push({id: newId(), t: tx, n: n, s: hasSubs ? 'הוספות שלכם' : '', d: false});
-      // הוספה רציפה: אחרי שמירת פריט חדש נפתחת מיד שורה ריקה נוספת
-      editing = {p: ed.p, k: ed.k, id: null, draft: null};
+      var sel2 = card.querySelector('.ecat');
+      var item = {id: newId(), t: tx, n: n, s: sel2 ? sel2.value : '', d: false};
+      insertByCat(arr, item);
+      // הוספה רציפה: שורה ריקה חדשה שזוכרת את הקטגוריה שנבחרה
+      editing = {p: ed.p, k: ed.k, id: null, draft: {t: '', n: '', s: item.s || undefined}};
     }
     rerenderSec(ed.p, ed.k);
     persist();
@@ -937,7 +1001,7 @@
       if (rts <= localTs) return;
       if (editing || saveTimer) return;
       localTs = rts;
-      state.lists = rem.lists;
+      state.lists = normalizeLists(rem.lists);
       state.titles = rem.titles || {};
       buildIndex();
       render();
@@ -959,7 +1023,7 @@
   }
   function boot(lists, titles){
     // titles: דריסות של כותרות קבוצות שנערכו, מפתח "טאב-קבוצה" -> {t, s}
-    state = {v: 3, lists: lists, titles: titles || {}};
+    state = {v: 3, lists: normalizeLists(lists), titles: titles || {}};
     buildIndex();
     store.get(TABKEY, false).then(function(t){
       if (t === 'A' || t === 'S' || t === 'L') activeTab = t;
@@ -1014,7 +1078,7 @@
         if ((rem.ts || 0) >= localTs){
           // הענן מעודכן יותר או שווה - מאמצים אותו
           localTs = rem.ts || 0;
-          state.lists = rem.lists;
+          state.lists = normalizeLists(rem.lists);
           state.titles = rem.titles || {};
           buildIndex();
           render();
