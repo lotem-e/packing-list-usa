@@ -311,6 +311,9 @@
     height:min(60vh, 500px); margin-top:10px;
     border-radius:var(--r); border:1px solid var(--line);
     background:var(--card); overflow:hidden;
+    /* stacking context משלו - בלעדיו שכבות Leaflet (z-index עד 1000)
+       מצוירות מעל הפס העליון הדביק בזמן גלילה */
+    position:relative; z-index:0;
   }
   /* ── לוח השנה של המסלול ── */
   .cal{
@@ -800,18 +803,20 @@
   // שברון האקורדיון: מצויר כלפי מטה, ומסתובב 180° ב־CSS כשהקבוצה פתוחה
   var CHEV = '<span class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>';
 
-  function edHTML(it, p, k){
-    // אם יש טיוטה שנשמרה בזמן רינדור מחדש - היא גוברת על הערכים המקוריים
-    var d = (editing && editing.draft) || null;
-    var vt = d ? d.t : (it ? it.t : '');
-    var vn = d ? d.n : (it ? it.n : '');
-    // בוחר קטגוריה: הקטגוריות הקיימות בלבד. "ללא קטגוריה" מוצעת רק בקבוצות
-    // שיש בהן פריטים לא מסווגים - בקבוצה שכולה מסווגת אין דרך חזרה החוצה
+  var TABNAMES = {L: 'לוטם', A: 'עתי', S: 'ביחד'};
+  function secTitle(p, k){
+    var ov = state.titles && state.titles[p + '-' + k];
+    return (ov && ov.t) || SEC[k].t;
+  }
+
+  // אופציות הקטגוריה של קבוצה נתונה. "ללא קטגוריה" מוצעת רק בקבוצות שיש
+  // בהן פריטים לא מסווגים - בקבוצה שכולה מסווגת אין דרך חזרה החוצה
+  function catOptionsHTML(p, k, vs){
     var items = state.lists[p][k];
     var cats = secCats(p, k);
     var hasPlain = items.some(function(x){ return !x.s; });
     var plainAllowed = hasPlain || !cats.length;
-    var vs = d && d.s !== undefined ? d.s : (it ? (it.s || '') : (plainAllowed ? '' : cats[0]));
+    if (vs === undefined || vs === null) vs = plainAllowed ? '' : cats[0];
     // קטגוריה שזה עתה נוצרה מכפתור "+ קטגוריה" עוד לא קיימת בפריטים - מציגים אותה כאופציה
     if (vs && cats.indexOf(vs) === -1) cats = [vs].concat(cats);
     var opts = '';
@@ -819,13 +824,41 @@
     cats.forEach(function(c){
       opts += '<option value="' + esc(c) + '"' + (c === vs ? ' selected' : '') + '>' + esc(c) + '</option>';
     });
-    var catHTML = '<label class="fl">קטגוריה<select class="ecat">' + opts + '</select></label>';
+    return opts;
+  }
+
+  function edHTML(it, p, k){
+    // אם יש טיוטה שנשמרה בזמן רינדור מחדש - היא גוברת על הערכים המקוריים
+    var d = (editing && editing.draft) || null;
+    var vt = d ? d.t : (it ? it.t : '');
+    var vn = d ? d.n : (it ? it.n : '');
+    // הקשר הקטגוריות: אם באמצע העברה למיקום אחר - הקטגוריות של היעד
+    var locP = p, locK = k;
+    if (it && d && d.loc){
+      var lp = d.loc.split('|');
+      locP = lp[0];
+      locK = lp[1];
+    }
+    var vs = d && d.s !== undefined ? d.s : (it && locP === p && locK === k ? (it.s || '') : undefined);
+    var catHTML = '<label class="fl">קטגוריה<select class="ecat">' + catOptionsHTML(locP, locK, vs) + '</select></label>';
+    // מיקום (טאב + קבוצה) - רק בעריכת פריט קיים, להעברה בין הרשימות
+    var locHTML = '';
+    if (it){
+      var locOpts = '';
+      ['L','A','S'].forEach(function(tp){
+        ORDER[tp].forEach(function(tk){
+          locOpts += '<option value="' + tp + '|' + tk + '"' + (tp === locP && tk === locK ? ' selected' : '') + '>' +
+            TABNAMES[tp] + ' · ' + esc(secTitle(tp, tk)) + '</option>';
+        });
+      });
+      locHTML = '<label class="fl">מיקום<select class="eloc">' + locOpts + '</select></label>';
+    }
     return '<li class="edrow"><div class="ed">' +
       '<label class="fl">שם הפריט' +
       '<input class="etx" value="' + esc(vt) + '"></label>' +
       '<label class="fl">הערה קטנה - לא חובה' +
       '<input class="en" value="' + esc(vn) + '"></label>' +
-      catHTML +
+      locHTML + catHTML +
       '<div class="edbtns"><button class="edsave">שמירה</button><button class="edcancel">ביטול</button>' +
       (it ? '<button class="eddel" data-id="' + esc(it.id) + '">מחיקה</button>' : '') +
       '</div></div></li>';
@@ -955,8 +988,8 @@
     var card = document.querySelector('.ed');
     if (!card) return;
     var tx = card.querySelector('.etx'), n = card.querySelector('.en');
-    var sc = card.querySelector('.ecat');
-    editing.draft = {t: tx ? tx.value : '', n: n ? n.value : '', s: sc ? sc.value : undefined};
+    var sc = card.querySelector('.ecat'), lc = card.querySelector('.eloc');
+    editing.draft = {t: tx ? tx.value : '', n: n ? n.value : '', s: sc ? sc.value : undefined, loc: lc ? lc.value : undefined};
   }
 
   function render(){
@@ -1046,6 +1079,28 @@
         r.it.t = tx;
         r.it.n = n;
         var sel = card.querySelector('.ecat');
+        var lsel = card.querySelector('.eloc');
+        var p2 = ed.p, k2 = ed.k;
+        if (lsel){
+          var lv = lsel.value.split('|');
+          p2 = lv[0];
+          k2 = lv[1];
+        }
+        if (p2 !== ed.p || k2 !== ed.k){
+          // העברה לטאב או קבוצה אחרים: מהמקור אל סוף הקטגוריה שנבחרה ביעד
+          var srcArr = state.lists[ed.p][ed.k];
+          var six = srcArr.indexOf(r.it);
+          setUndo({type: 'move', p: ed.p, k: ed.k, ix: six, s: r.it.s, item: r.it},
+            'הפריט עבר אל ' + TABNAMES[p2] + ' · ' + secTitle(p2, k2));
+          if (six > -1) srcArr.splice(six, 1);
+          r.it.s = sel ? sel.value : '';
+          insertByCat(state.lists[p2][k2], r.it);
+          editing = null;
+          rerenderSec(ed.p, ed.k);
+          rerenderSec(p2, k2);
+          persist();
+          return;
+        }
         if (sel && sel.value !== (r.it.s || '')){
           // שינוי קטגוריה: מוציאים את הפריט ממקומו ומכניסים בסוף הקטגוריה החדשה
           var arr0 = state.lists[ed.p][ed.k];
@@ -1082,7 +1137,15 @@
 
   document.addEventListener('change', function(ev){
     var cb = ev.target;
-    if (!cb || cb.type !== 'checkbox' || !cb.dataset.id) return;
+    if (!cb) return;
+    // שינוי מיקום בעורך מרענן את רשימת הקטגוריות לאלו של היעד
+    if (cb.classList && cb.classList.contains('eloc')){
+      var lp2 = cb.value.split('|');
+      var catSel = cb.closest('.ed') ? cb.closest('.ed').querySelector('.ecat') : null;
+      if (catSel) catSel.innerHTML = catOptionsHTML(lp2[0], lp2[1]);
+      return;
+    }
+    if (cb.type !== 'checkbox' || !cb.dataset.id) return;
     var r = byId[cb.dataset.id];
     if (!r) return;
     r.it.d = cb.checked;
@@ -1205,6 +1268,17 @@
       // החזרת פריט שנמחק למקומו המקורי
       var arr = state.lists[u.p][u.k];
       arr.splice(Math.min(u.ix, arr.length), 0, u.item);
+    } else if (u.type === 'move'){
+      // מוציאים את הפריט מהיעד ומחזירים אותו למקומו ולקטגוריה המקוריים
+      var cur = byId[u.item.id];
+      if (cur){
+        var ta = state.lists[cur.p][cur.k];
+        var ti = ta.indexOf(cur.it);
+        if (ti > -1) ta.splice(ti, 1);
+      }
+      u.item.s = u.s;
+      var back = state.lists[u.p][u.k];
+      back.splice(Math.min(u.ix, back.length), 0, u.item);
     }
     hideToast();
     editing = null;
