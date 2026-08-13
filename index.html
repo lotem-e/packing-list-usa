@@ -105,6 +105,8 @@
     background:var(--wire); -webkit-background-clip:text; background-clip:text; color:transparent;
   }
   .gh .cnt{font-size:14px; color:var(--ink2); font-weight:700; white-space:nowrap}
+  /* צמדי "כמה מתוך" מתרנדרים כיחידה LTR, אחרת הסדר מתהפך בשורה עברית */
+  .cnt,.ct,.num{direction:ltr; unicode-bidi:isolate}
   .chev{display:flex; color:var(--ink2); flex:0 0 auto}
   .chev svg{width:20px; height:20px; transition:transform .3s ease}
   section.grp:not(.fold) .chev svg{transform:rotate(180deg)}
@@ -155,17 +157,20 @@
   .tx small{display:block; color:var(--ink2); font-size:13px; line-height:1.45; margin-top:1px}
   li.it.done .tx{color:var(--ink2); text-decoration:line-through; text-decoration-color:rgba(102,107,125,.6)}
   li.it.done .tx small{text-decoration:none; opacity:.7}
-  /* ── עריכה: עיפרון שקט בכל שורה ── */
+  /* ── עריכה: עיפרון שקט בשורות ובכותרות ── */
   .ictl{display:flex; align-items:center; padding-inline-end:2px}
-  .ictl .edb{
+  .edb{
     width:42px; height:42px; align-self:center; border-radius:12px; cursor:pointer;
     border:none; background:none; color:var(--ink2); opacity:.65; padding:0;
     display:flex; align-items:center; justify-content:center;
     transition:opacity .15s ease, background .15s ease;
   }
-  .ictl .edb svg{width:17px; height:17px; display:block}
-  .ictl .edb:hover{opacity:1; color:var(--ink); background:rgba(36,41,56,.06)}
-  .ictl .edb:focus-visible{outline:3px solid var(--violet); outline-offset:1px; opacity:1}
+  .edb svg{width:17px; height:17px; display:block}
+  .edb:hover{opacity:1; color:var(--ink); background:rgba(36,41,56,.06)}
+  .edb:focus-visible{outline:3px solid var(--violet); outline-offset:1px; opacity:1}
+  .gh .edb{width:38px; height:38px}
+  /* כותרת במצב עריכה: הכרטיס תופס את כל רוחב הכותרת */
+  .gh.ghed{display:block; cursor:default}
   li.addrow{
     margin:8px 8px 2px; padding:9px 12px; border:1.5px dashed var(--line);
     border-radius:12px; color:var(--ink2); font-weight:500; font-size:14.5px;
@@ -206,13 +211,7 @@
   }
   .edsave:focus-visible,.edcancel:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
   /* ── תחתית ── */
-  .foot{
-    margin-top:30px; display:flex; align-items:center; justify-content:space-between;
-    gap:12px; flex-wrap:wrap;
-  }
-  .fbtns{display:flex; gap:8px; flex-wrap:wrap}
-  .save{font-size:13.5px; color:var(--ink2); transition:color .2s}
-  .save.flash{color:var(--neon-p); font-weight:700}
+  .foot{margin-top:30px; display:flex}
   button.reset{
     font-family:inherit; font-size:14px; font-weight:700; color:var(--ink2);
     background:none; border:1.5px solid var(--line); border-radius:99px;
@@ -289,7 +288,7 @@
 <div class="topbar">
   <div class="in">
     <span class="name">רשימת האריזה</span>
-    <span class="tally"><b id="doneAll">0</b> / <span id="totAll">0</span> נארזו</span>
+    <span class="tally"><span class="num"><b id="doneAll">0</b> / <span id="totAll">0</span></span> נארזו</span>
   </div>
   <div class="tabs" role="tablist">
     <button class="tabbtn on" data-tab="L" role="tab"><span class="nm">לוטם</span><span class="ct" data-ct="L">0 / 0</span></button>
@@ -310,12 +309,7 @@
   <div class="tabpane" data-tab="S" id="pane-S"></div>
 
   <div class="foot">
-    <div class="fbtns">
-      <button class="reset" id="resetBtn">לאפס סימונים</button>
-      <button class="reset" id="restoreBtn">שחזור הרשימה המקורית</button>
-      <button class="reset" id="logoutBtn" hidden>יציאה</button>
-    </div>
-    <span class="save" id="saveNote">ההתקדמות נשמרת אוטומטית</span>
+    <button class="reset" id="logoutBtn" hidden>יציאה</button>
   </div>
 
 </div>
@@ -353,7 +347,6 @@
       sb = window.supabase.createClient(SB_URL, SB_KEY);
     }
   } catch(e){ sb = null; }
-  var NAMES = {L:'לוטם', A:'עתי', S:'ביחד'};
   var TITLES = {L:'האריזה של לוטם', A:'האריזה של עתי', S:'ביחד — ציוד משותף, קניות וסידורים'};
   var ORDER = {L:['tro','big','pbm'], A:['tro','big','pbm'], S:['rem','gear','camp','wal','amz']};
   var SEC = {
@@ -522,7 +515,6 @@
   var FOLDKEY = 'pack-usa-2026-fold';
   // אילו קבוצות מקופלות, לפי מפתח "טאב-קבוצה". נשמר פר מכשיר - זו העדפת תצוגה
   var fold = {};
-  var SAVETXT = 'ההתקדמות נשמרת אוטומטית';
   // שכבת אחסון: window.storage של Claude (משותף לשניכם) / localStorage (פר מכשיר) / זיכרון בלבד
   var store = (function(){
     // מצב Supabase: המצב המשותף נשמר בענן, עם עותק מקומי כמטמון לטעינה מיידית.
@@ -579,8 +571,7 @@
     return { mode: 'none', get: function(){ return Promise.resolve(null); }, set: function(){ return Promise.resolve(); } };
   })();
   var SHARED = store.mode === 'claude' || store.mode === 'supabase';
-  var saveNote = document.getElementById('saveNote');
-  var saveTimer = null, flashTimer = null;
+  var saveTimer = null;
 
   function esc(x){
     return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -635,10 +626,27 @@
     var m = SEC[k], items = state.lists[p][k];
     var done = items.filter(function(x){ return x.d; }).length;
     var key = p + '-' + k, folded = !!fold[key];
+    // כותרת ותת כותרת: קודם מה שנערך ונשמר, ואם אין - ברירת המחדל מהקוד
+    var ov = (state.titles && state.titles[key]) || null;
+    var tT = ov ? ov.t : m.t, tS = ov ? ov.s : m.s;
     var h = '<section class="grp' + (items.length && done === items.length ? ' full' : '') + (folded ? ' fold' : '') + '" data-person="' + p + '" data-k="' + k + '">';
-    // הכותרת היא button אמיתי בתוך h2 - נגיש למקלדת ולקורא מסך, וכל שטח ה־gh לחיץ
-    h += '<div class="gh"><h2><button class="ghb" type="button" aria-expanded="' + (folded ? 'false' : 'true') + '" aria-controls="body-' + key + '">' + m.i + ' ' + esc(m.t) + '<small>' + esc(m.s) + '</small></button></h2>' +
-      '<span class="cnt">' + done + ' / ' + items.length + '</span>' + CHEV + '</div>';
+    if (editing && editing.sec && editing.p === p && editing.k === k){
+      // הכותרת במצב עריכה: כרטיס עורך במקום שורת הכותרת
+      var d = editing.draft || null;
+      h += '<div class="gh ghed"><div class="ed">' +
+        '<label class="fl">כותרת' +
+        '<input class="etx" value="' + esc(d ? d.t : tT) + '"></label>' +
+        '<label class="fl">תת כותרת - לא חובה' +
+        '<input class="en" value="' + esc(d ? d.n : tS) + '"></label>' +
+        '<div class="edbtns"><button class="edsave">שמירה</button><button class="edcancel">ביטול</button></div>' +
+        '</div></div>';
+    } else {
+      // הכותרת היא button אמיתי בתוך h2 - נגיש למקלדת ולקורא מסך, וכל שטח ה־gh לחיץ
+      h += '<div class="gh"><h2><button class="ghb" type="button" aria-expanded="' + (folded ? 'false' : 'true') + '" aria-controls="body-' + key + '">' + m.i + ' ' + esc(tT) +
+        (tS ? '<small>' + esc(tS) + '</small>' : '') + '</button></h2>' +
+        '<button class="edb ghe" data-p="' + p + '" data-k="' + k + '" aria-label="עריכת הכותרת ״' + esc(tT) + '״">' + PEN + '</button>' +
+        '<span class="cnt">' + done + ' / ' + items.length + '</span>' + CHEV + '</div>';
+    }
     h += '<div class="gbody" id="body-' + key + '"><div class="gin"><ul>';
     var last = '';
     items.forEach(function(it){
@@ -688,12 +696,13 @@
     }
   }
 
-  // שומר את מה שהוקלד בעורך לפני רינדור מחדש, כדי שהטיוטה לא תלך לאיבוד
+  // שומר את מה שהוקלד בעורך לפני רינדור מחדש, כדי שהטיוטה לא תלך לאיבוד.
+  // .ed הוא הכרטיס עצמו - משותף לעורך פריט ולעורך כותרת
   function captureDraft(){
     if (!editing) return;
-    var row = document.querySelector('.edrow');
-    if (!row) return;
-    var tx = row.querySelector('.etx'), n = row.querySelector('.en');
+    var card = document.querySelector('.ed');
+    if (!card) return;
+    var tx = card.querySelector('.etx'), n = card.querySelector('.en');
     editing.draft = {t: tx ? tx.value : '', n: n ? n.value : ''};
   }
 
@@ -743,30 +752,30 @@
     saveTimer = setTimeout(function(){
       saveTimer = null;
       localTs = Date.now();
-      var payload = JSON.stringify({v: 3, ts: localTs, lists: state.lists});
+      var payload = JSON.stringify({v: 3, ts: localTs, lists: state.lists, titles: state.titles || {}});
       store.set(KEY, payload, true).then(function(ok){
-        // ok === false פירושו שהכתיבה לענן נכשלה (הרשת לא ענתה); מקומית זה כן נשמר
-        saveNote.textContent = ok === false ? 'נשמר מקומית - הרשת לא ענתה' : 'נשמר ✓';
-        saveNote.classList.add('flash');
-        clearTimeout(flashTimer);
-        flashTimer = setTimeout(function(){
-          saveNote.textContent = SAVETXT;
-          saveNote.classList.remove('flash');
-        }, 1400);
+        // הצלחה שקטה; רק כישלון סנכרון (אין רשת) מקבל התרעה, כי מקומית זה כן נשמר
+        if (ok === false) showToast('הסנכרון לא הצליח - השינוי שמור רק במכשיר הזה', false);
       });
     }, 400);
   }
 
   function saveEditor(fromEl){
     if (!editing) return;
-    var row = fromEl.closest('.edrow');
-    if (!row) return;
-    var tx = row.querySelector('.etx').value.trim();
-    var n = row.querySelector('.en').value.trim();
+    var card = fromEl.closest('.ed');
+    if (!card) return;
+    var tx = card.querySelector('.etx').value.trim();
+    var n = card.querySelector('.en').value.trim();
     var ed = editing;
     // שמירה על שדה ריק סוגרת את העורך - זו גם הדרך לסיים רצף הוספות
     if (!tx){ editing = null; rerenderSec(ed.p, ed.k); return; }
-    if (ed.id){
+    if (ed.sec){
+      // עריכת כותרת הקבוצה: אם חזרנו בדיוק לברירת המחדל, מוחקים את הדריסה
+      var key = ed.p + '-' + ed.k;
+      if (tx === SEC[ed.k].t && n === SEC[ed.k].s) delete state.titles[key];
+      else state.titles[key] = {t: tx, s: n};
+      editing = null;
+    } else if (ed.id){
       var r = byId[ed.id];
       if (r){ r.it.t = tx; r.it.n = n; }
       editing = null;
@@ -817,12 +826,18 @@
     // closest ולא בדיקת target ישירה - כי הקליק יכול לפגוע ב־SVG שבתוך הכפתור
     var eb = t.closest('button.edb');
     if (eb){
-      var r = byId[eb.dataset.id];
-      if (!r) return;
       var prev = editing;
-      editing = {p: r.p, k: r.k, id: r.it.id, draft: null};
-      if (prev && (prev.p !== r.p || prev.k !== r.k)) rerenderSec(prev.p, prev.k);
-      rerenderSec(r.p, r.k);
+      if (eb.classList.contains('ghe')){
+        // עיפרון של כותרת קבוצה
+        editing = {p: eb.dataset.p, k: eb.dataset.k, sec: true, draft: null};
+      } else {
+        // עיפרון של פריט
+        var r = byId[eb.dataset.id];
+        if (!r) return;
+        editing = {p: r.p, k: r.k, id: r.it.id, draft: null};
+      }
+      if (prev && (prev.p !== editing.p || prev.k !== editing.k)) rerenderSec(prev.p, prev.k);
+      rerenderSec(editing.p, editing.k);
       return;
     }
     // מחיקה מתוך כרטיס העריכה: מוחקים מיד, והטוסט מציע ביטול
@@ -845,9 +860,10 @@
       if (ed) rerenderSec(ed.p, ed.k);
       return;
     }
-    // לחיצה בכל שטח כותרת הקבוצה מקפלת או פותחת אותה
+    // לחיצה בכל שטח כותרת הקבוצה מקפלת או פותחת אותה,
+    // חוץ מלחיצות בתוך כרטיס עריכה פתוח (עורך הכותרת יושב בתוך ה־gh)
     var gh = t.closest('.gh');
-    if (gh){
+    if (gh && !t.closest('.ed')){
       var secEl = gh.closest('section.grp');
       if (secEl) toggleFold(secEl);
       return;
@@ -902,43 +918,9 @@
       // החזרת פריט שנמחק למקומו המקורי
       var arr = state.lists[u.p][u.k];
       arr.splice(Math.min(u.ix, arr.length), 0, u.item);
-    } else if (u.type === 'check'){
-      // החזרת סימונים שאופסו
-      var m = {};
-      u.ids.forEach(function(id){ m[id] = true; });
-      ORDER[u.p].forEach(function(k){
-        state.lists[u.p][k].forEach(function(it){ if (m[it.id]) it.d = true; });
-      });
-    } else if (u.type === 'tab'){
-      // החזרת טאב שלם שנדרס בשחזור לרשימה המקורית
-      try { state.lists[u.p] = JSON.parse(u.lists); } catch(e){}
     }
     hideToast();
     editing = null;
-    render();
-    persist();
-  });
-
-  document.getElementById('resetBtn').addEventListener('click', function(){
-    var ids = [];
-    ORDER[activeTab].forEach(function(k){
-      state.lists[activeTab][k].forEach(function(it){ if (it.d) ids.push(it.id); });
-    });
-    if (!ids.length){ showToast('אין סימונים לאפס אצל ' + NAMES[activeTab], false); return; }
-    ORDER[activeTab].forEach(function(k){
-      state.lists[activeTab][k].forEach(function(it){ it.d = false; });
-    });
-    editing = null;
-    setUndo({type: 'check', p: activeTab, ids: ids}, 'הסימונים של ״' + NAMES[activeTab] + '״ אופסו');
-    render();
-    persist();
-  });
-
-  document.getElementById('restoreBtn').addEventListener('click', function(){
-    var old = JSON.stringify(state.lists[activeTab]);
-    state.lists[activeTab] = seedTab(activeTab);
-    editing = null;
-    setUndo({type: 'tab', p: activeTab, lists: old}, 'הרשימה של ״' + NAMES[activeTab] + '״ שוחזרה למקור');
     render();
     persist();
   });
@@ -956,6 +938,7 @@
       if (editing || saveTimer) return;
       localTs = rts;
       state.lists = rem.lists;
+      state.titles = rem.titles || {};
       buildIndex();
       render();
       setTabUI();
@@ -974,8 +957,9 @@
     setTabUI();
     startPoll();
   }
-  function boot(lists){
-    state = {v: 3, lists: lists};
+  function boot(lists, titles){
+    // titles: דריסות של כותרות קבוצות שנערכו, מפתח "טאב-קבוצה" -> {t, s}
+    state = {v: 3, lists: lists, titles: titles || {}};
     buildIndex();
     store.get(TABKEY, false).then(function(t){
       if (t === 'A' || t === 'S' || t === 'L') activeTab = t;
@@ -1022,7 +1006,7 @@
     // קודם מרנדרים מהמטמון המקומי (מיידי), ואז מיישרים מול הענן
     var lp = readCache();
     localTs = lp && lp.ts ? lp.ts : 0;
-    boot(lp && lp.lists ? lp.lists : seedAll());
+    boot(lp && lp.lists ? lp.lists : seedAll(), lp ? lp.titles : null);
     store.get(KEY, true).then(function(v){
       var rem = null;
       if (v){ try { rem = JSON.parse(v); } catch(e){} }
@@ -1031,6 +1015,7 @@
           // הענן מעודכן יותר או שווה - מאמצים אותו
           localTs = rem.ts || 0;
           state.lists = rem.lists;
+          state.titles = rem.titles || {};
           buildIndex();
           render();
           setTabUI();
@@ -1064,8 +1049,6 @@
 
   function init(){
     if (store.mode === 'supabase'){
-      SAVETXT = 'מסתנכרן בין שניכם אוטומטית';
-      saveNote.textContent = SAVETXT;
       // session שמור מהתחברות קודמת? נכנסים ישר. אין? מסך התחברות
       sb.auth.getSession().then(function(res){
         var session = res && res.data ? res.data.session : null;
@@ -1074,19 +1057,15 @@
       return;
     }
     if (store.mode === 'none'){
-      SAVETXT = 'שמירה זמנית — בתצוגה הזו השינויים לא נשמרים';
-      saveNote.textContent = SAVETXT;
       boot(seedAll());
       return;
     }
-    SAVETXT = SHARED ? 'מסתנכרן בין שניכם אוטומטית' : 'נשמר במכשיר הזה אוטומטית';
-    saveNote.textContent = SAVETXT;
     store.get(KEY, true).then(function(v){
       var loaded = null;
       if (v){ try { loaded = JSON.parse(v); } catch(e){} }
       if (loaded && loaded.lists){
         localTs = loaded.ts || 0;
-        boot(loaded.lists);
+        boot(loaded.lists, loaded.titles);
         return;
       }
       if (!SHARED){
@@ -1099,7 +1078,7 @@
         var old3 = null;
         if (pv){ try { old3 = JSON.parse(pv); } catch(e){} }
         if (old3 && old3.lists){
-          boot(old3.lists);
+          boot(old3.lists, old3.titles);
           persist();
           return;
         }
