@@ -353,12 +353,11 @@
     }
   } catch(e){ sb = null; }
   var TITLES = {L:'האריזה של לוטם', A:'האריזה של עתי', S:'ביחד — ציוד משותף, קניות וסידורים'};
-  var ORDER = {L:['tro','big'], A:['tro','big'], S:['rem','gear','camp','wal','amz']};
+  var ORDER = {L:['tro','big'], A:['tro','big'], S:['rem','camp','wal','amz']};
   var SEC = {
     tro:{i:'👜', t:'טרולי + תיק אישי', s:'עולה למטוס · עד 8 ק״ג'},
     big:{i:'🧳', t:'מזוודה גדולה', s:'עד 23 ק״ג — לשקול לפני היציאה'},
     rem:{i:'✈️', t:'שבוע לפני הטיסה', s:'סידורים אחרונים — לא נארזים, אבל קריטיים'},
-    gear:{i:'🎒', t:'ציוד משותף מהבית', s:'אחד לזוג — מתחלק בין המזוודות'},
     camp:{i:'⛺', t:'מזוודה שלישית — קמפינג', s:'אופציונלית אבל מומלצת · מזמינים מראש באתר אל על'},
     wal:{i:'🛒', t:'וולמארט קרסון סיטי', s:'27.8 · כל מה שכבד, מתכלה, או אסור בטיסה'},
     amz:{i:'📦', t:'אמזון לוקר + הום דיפו רינו', s:'מה שאין בוולמארט · לתזמן הגעה ל־25–27.8'}
@@ -427,18 +426,6 @@
       {t:'להוסיף LDW בדלפק Enterprise ב־LAX', n:'ה־CDW של הברוקר לא מכסה שמשות, צמיגים, גחון ודרכי עפר'},
       {t:'לשקול את כל המזוודות בבית — עד 23 ק״ג לכל אחת'}
     ],
-    gear:[
-      {t:'מסכות N95 — חבילה של 10+'},
-      {t:'פנס ראש רזרבי + סוללות'},
-      {t:'מפצל חשמל ישראלי קטן', n:'מתאם אחד למפצל = כל המכשירים נטענים יחד'},
-      {t:'מטען USB כפול לרכב + כבלים ארוכים', n:'לנסיעות הארוכות ברוג׳'},
-      {t:'שקיות זיפלוק עבות בכמה גדלים', n:'הגנת האבק של הטלפונים והאלקטרוניקה'},
-      {t:'מתנות קטנות מהארץ לחלוקה בפלאיה', n:'במבה, ביסלי, מדבקות, חמסות — תרבות ה־gifting תאהב את זה'},
-      {t:'GoPro / מצלמה + נרתיק אטום + כרטיסי זיכרון'},
-      {t:'משקל כף־יד למזוודות', n:'שווה זהב בדרך חזרה'},
-      {t:'טייפ ספורט / פלסטרים לשפשופים'},
-      {t:'ערכת תפירה קטנה לתיקוני תחפושות'}
-    ],
     camp:[
       {t:'האוהל — אחרי הקמת ניסיון בסלון', n:'לוודא שכל החלקים בפנים לפני שסוגרים'},
       {t:'יריעת קרקע (גראונדשיט) לאוהל'},
@@ -449,7 +436,17 @@
       {t:'שטיחון כניסה לאוהל — משאיר את האבק בחוץ'},
       {t:'הפרוות והתחפושות הגדולות', n:'ממלאות את הנפח שנשאר במזוודה'},
       {t:'שקיות ואקום ריקות גדולות', n:'לדחוס הכל — כולל הטופר — בדרך הביתה'},
-      {t:'שקילה אחרונה — עד 23 ק״ג'}
+      {t:'שקילה אחרונה — עד 23 ק״ג'},
+      {t:'מסכות N95 — חבילה של 10+'},
+      {t:'פנס ראש רזרבי + סוללות'},
+      {t:'מפצל חשמל ישראלי קטן', n:'מתאם אחד למפצל = כל המכשירים נטענים יחד'},
+      {t:'מטען USB כפול לרכב + כבלים ארוכים', n:'לנסיעות הארוכות ברוג׳'},
+      {t:'שקיות זיפלוק עבות בכמה גדלים', n:'הגנת האבק של הטלפונים והאלקטרוניקה'},
+      {t:'מתנות קטנות מהארץ לחלוקה בפלאיה', n:'במבה, ביסלי, מדבקות, חמסות — תרבות ה־gifting תאהב את זה'},
+      {t:'GoPro / מצלמה + נרתיק אטום + כרטיסי זיכרון'},
+      {t:'משקל כף־יד למזוודות', n:'שווה זהב בדרך חזרה'},
+      {t:'טייפ ספורט / פלסטרים לשפשופים'},
+      {t:'ערכת תפירה קטנה לתיקוני תחפושות'}
     ],
     wal:[
       {t:'מים לשתייה: ‎30–35 גלון (‎115–130 ליטר)', n:'‏1.5 גלון לאדם ליום × 10 ימים × שניים — מיכלי 5 גלון', s:'מים ושתייה'},
@@ -598,11 +595,20 @@
   // מיגרציה (2026-08): "ציוד פלאיה אישי" הפך מקבוצה עצמאית לקטגוריה בתוך המזוודה
   // הגדולה. נתונים ישנים מהענן או מהמטמון עדיין מכילים pbm - מקפלים אותו פנימה.
   // בטוח להריץ שוב ושוב: אחרי הריצה הראשונה אין יותר pbm
+  // מסומן כשמיגרציה באמת שינתה משהו - כדי לדחוף את הצורה החדשה לאחסון מיד
+  var needMigrationPush = false;
+  function flushMigration(){
+    if (needMigrationPush){
+      needMigrationPush = false;
+      persist();
+    }
+  }
   function normalizeLists(lists){
     if (!lists) return lists;
     ['L','A'].forEach(function(p){
       var tab = lists[p];
       if (tab && tab.pbm){
+        needMigrationPush = true;
         if (!tab.big) tab.big = [];
         tab.pbm.forEach(function(it){
           it.s = 'ציוד פלאיה';
@@ -611,6 +617,18 @@
         delete tab.pbm;
       }
     });
+    // מיגרציה נוספת (2026-08): "ציוד משותף מהבית" התמזג לתוך "מזוודה שלישית",
+    // בלי קטגוריה - הפריטים נכנסים בסוף הרשימה כפי שהם
+    var tabS = lists.S;
+    if (tabS && tabS.gear){
+      needMigrationPush = true;
+      if (!tabS.camp) tabS.camp = [];
+      tabS.gear.forEach(function(it){
+        it.s = '';
+        tabS.camp.push(it);
+      });
+      delete tabS.gear;
+    }
     return lists;
   }
 
@@ -623,9 +641,17 @@
     return seen;
   }
 
-  // הכנסת פריט בסוף הקטגוריה שלו, כדי שהקיבוץ בתצוגה יישאר רציף
+  // הכנסת פריט בסוף הקטגוריה שלו, כדי שהקיבוץ בתצוגה יישאר רציף.
+  // פריט בלי קטגוריה נכנס בסוף הרצועה הלא מסווגת, לפני הקטגוריה הראשונה;
+  // קטגוריה חדשה לגמרי נפתחת בסוף הקבוצה
   function insertByCat(arr, item){
-    if (!item.s){ arr.push(item); return; }
+    if (!item.s){
+      for (var j = 0; j < arr.length; j++){
+        if (arr[j].s){ arr.splice(j, 0, item); return; }
+      }
+      arr.push(item);
+      return;
+    }
     var at = -1;
     for (var i = 0; i < arr.length; i++){ if (arr[i].s === item.s) at = i; }
     if (at === -1) arr.push(item);
@@ -651,17 +677,23 @@
     var d = (editing && editing.draft) || null;
     var vt = d ? d.t : (it ? it.t : '');
     var vn = d ? d.n : (it ? it.n : '');
-    // בוחר קטגוריה - רק בקבוצות שיש בהן קטגוריות
+    // בוחר קטגוריה: הקטגוריות הקיימות + יצירת חדשה. "ללא קטגוריה" מוצעת רק
+    // בקבוצות שיש בהן פריטים לא מסווגים - בקבוצה שכולה מסווגת אין דרך חזרה החוצה
+    var items = state.lists[p][k];
     var cats = secCats(p, k);
-    var catHTML = '';
-    if (cats.length){
-      var vs = d && d.s !== undefined ? d.s : (it && it.s ? it.s : cats[0]);
-      catHTML = '<label class="fl">קטגוריה<select class="ecat">' +
-        cats.map(function(c){
-          return '<option value="' + esc(c) + '"' + (c === vs ? ' selected' : '') + '>' + esc(c) + '</option>';
-        }).join('') +
-        '</select></label>';
-    }
+    var hasPlain = items.some(function(x){ return !x.s; });
+    var plainAllowed = hasPlain || !cats.length;
+    var vs = d && d.s !== undefined ? d.s : (it ? (it.s || '') : (plainAllowed ? '' : cats[0]));
+    var showNew = vs === '__new__';
+    var opts = '';
+    if (plainAllowed) opts += '<option value=""' + (vs === '' ? ' selected' : '') + '>ללא קטגוריה</option>';
+    cats.forEach(function(c){
+      opts += '<option value="' + esc(c) + '"' + (c === vs ? ' selected' : '') + '>' + esc(c) + '</option>';
+    });
+    opts += '<option value="__new__"' + (showNew ? ' selected' : '') + '>+ קטגוריה חדשה</option>';
+    var catHTML = '<label class="fl">קטגוריה<select class="ecat">' + opts + '</select>' +
+      '<input class="encat" placeholder="שם הקטגוריה החדשה"' + (showNew ? '' : ' hidden') +
+      ' value="' + esc(d && d.ns ? d.ns : '') + '"></label>';
     return '<li class="edrow"><div class="ed">' +
       '<label class="fl">שם הפריט' +
       '<input class="etx" value="' + esc(vt) + '"></label>' +
@@ -753,8 +785,9 @@
     if (!editing) return;
     var card = document.querySelector('.ed');
     if (!card) return;
-    var tx = card.querySelector('.etx'), n = card.querySelector('.en'), sc = card.querySelector('.ecat');
-    editing.draft = {t: tx ? tx.value : '', n: n ? n.value : '', s: sc ? sc.value : undefined};
+    var tx = card.querySelector('.etx'), n = card.querySelector('.en');
+    var sc = card.querySelector('.ecat'), nc = card.querySelector('.encat');
+    editing.draft = {t: tx ? tx.value : '', n: n ? n.value : '', s: sc ? sc.value : undefined, ns: nc ? nc.value : ''};
   }
 
   function render(){
@@ -832,23 +865,39 @@
         r.it.t = tx;
         r.it.n = n;
         var sel = card.querySelector('.ecat');
-        if (sel && sel.value !== r.it.s){
-          // שינוי קטגוריה: מוציאים את הפריט ממקומו ומכניסים בסוף הקטגוריה החדשה
-          var arr0 = state.lists[ed.p][ed.k];
-          var ix0 = arr0.indexOf(r.it);
-          if (ix0 > -1) arr0.splice(ix0, 1);
-          r.it.s = sel.value;
-          insertByCat(arr0, r.it);
+        if (sel){
+          var ns = sel.value;
+          if (ns === '__new__'){
+            // קטגוריה חדשה; שם ריק = נשארים בקטגוריה הנוכחית
+            var nn = card.querySelector('.encat');
+            ns = (nn && nn.value.trim()) || r.it.s || '';
+          }
+          if (ns !== (r.it.s || '')){
+            // שינוי קטגוריה: מוציאים את הפריט ממקומו ומכניסים בסוף הקטגוריה החדשה
+            var arr0 = state.lists[ed.p][ed.k];
+            var ix0 = arr0.indexOf(r.it);
+            if (ix0 > -1) arr0.splice(ix0, 1);
+            r.it.s = ns;
+            insertByCat(arr0, r.it);
+          }
         }
       }
       editing = null;
     } else {
       var arr = state.lists[ed.p][ed.k];
       var sel2 = card.querySelector('.ecat');
-      var item = {id: newId(), t: tx, n: n, s: sel2 ? sel2.value : '', d: false};
+      var s2 = '';
+      if (sel2){
+        s2 = sel2.value;
+        if (s2 === '__new__'){
+          var nn2 = card.querySelector('.encat');
+          s2 = (nn2 && nn2.value.trim()) || '';
+        }
+      }
+      var item = {id: newId(), t: tx, n: n, s: s2, d: false};
       insertByCat(arr, item);
       // הוספה רציפה: שורה ריקה חדשה שזוכרת את הקטגוריה שנבחרה
-      editing = {p: ed.p, k: ed.k, id: null, draft: {t: '', n: '', s: item.s || undefined}};
+      editing = {p: ed.p, k: ed.k, id: null, draft: {t: '', n: '', s: item.s, ns: ''}};
     }
     rerenderSec(ed.p, ed.k);
     persist();
@@ -868,7 +917,17 @@
 
   document.addEventListener('change', function(ev){
     var cb = ev.target;
-    if (!cb || cb.type !== 'checkbox' || !cb.dataset.id) return;
+    if (!cb) return;
+    // בחירת "+ קטגוריה חדשה" חושפת את שדה השם
+    if (cb.classList && cb.classList.contains('ecat')){
+      var nn = cb.parentElement.querySelector('.encat');
+      if (nn){
+        nn.hidden = cb.value !== '__new__';
+        if (!nn.hidden) nn.focus();
+      }
+      return;
+    }
+    if (cb.type !== 'checkbox' || !cb.dataset.id) return;
     var r = byId[cb.dataset.id];
     if (!r) return;
     r.it.d = cb.checked;
@@ -936,7 +995,7 @@
 
   document.addEventListener('keydown', function(ev){
     if (!editing) return;
-    if (ev.key === 'Enter' && ev.target && (ev.target.classList.contains('etx') || ev.target.classList.contains('en'))){
+    if (ev.key === 'Enter' && ev.target && (ev.target.classList.contains('etx') || ev.target.classList.contains('en') || ev.target.classList.contains('encat'))){
       ev.preventDefault();
       saveEditor(ev.target);
     }
@@ -1006,6 +1065,7 @@
       buildIndex();
       render();
       setTabUI();
+      flushMigration();
     });
   }
   function startPoll(){
@@ -1025,6 +1085,7 @@
     // titles: דריסות של כותרות קבוצות שנערכו, מפתח "טאב-קבוצה" -> {t, s}
     state = {v: 3, lists: normalizeLists(lists), titles: titles || {}};
     buildIndex();
+    flushMigration();
     store.get(TABKEY, false).then(function(t){
       if (t === 'A' || t === 'S' || t === 'L') activeTab = t;
       return store.get(FOLDKEY, false);
@@ -1083,6 +1144,7 @@
           buildIndex();
           render();
           setTabUI();
+          flushMigration();
         } else {
           // המקומי מעודכן יותר (עריכות בלי רשת) - דוחפים למעלה
           persist();
