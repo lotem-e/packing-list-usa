@@ -34,30 +34,28 @@
     border-bottom:1px solid var(--line);
   }
   .topbar .in{
-    max-width:680px; margin:0 auto; padding:10px 18px 6px;
-    display:flex; align-items:center; gap:10px;
+    max-width:680px; margin:0 auto; padding:14px 18px 12px;
+    display:flex; align-items:center; justify-content:center;
   }
   .topbar .name{
     font-family:"Karantina", "Heebo", sans-serif; font-weight:700;
-    font-size:26px; line-height:1; margin-inline-end:auto;
+    font-size:34px; line-height:1; text-align:center;
+    background:var(--wire); -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 0 12px rgba(233,57,140,.3));
   }
-  .topbar .tally{font-size:14px; color:var(--ink2); font-weight:500; white-space:nowrap}
-  .topbar .tally b{color:var(--ink); font-size:16px}
   .tabs{max-width:680px; margin:0 auto; padding:0 18px 10px; display:flex; gap:7px}
   .tabbtn{
     flex:1; font-family:inherit; cursor:pointer; text-align:center;
     background:transparent; color:var(--ink2);
-    border:1.5px solid var(--line); border-radius:13px; padding:6px 4px 5px;
+    border:1.5px solid var(--line); border-radius:99px; padding:6px 4px 5px;
   }
   .tabbtn .nm{display:block; font-family:"Karantina",sans-serif; font-weight:700; font-size:23px; line-height:1.05}
   .tabbtn .ct{display:block; font-size:11px; font-weight:500; margin-top:2px}
-  .tabbtn[data-tab="L"]{--pc:var(--neon-p)}
-  .tabbtn[data-tab="A"]{--pc:var(--neon-c)}
-  .tabbtn[data-tab="S"]{--pc:var(--violet)}
   .tabbtn.on{
-    background:var(--card); color:var(--ink); border-color:transparent;
-    box-shadow:inset 0 -3px 0 0 var(--pc), 0 1px 4px rgba(36,41,56,.06);
+    background:var(--ink); color:#fff; border-color:var(--ink);
+    box-shadow:0 2px 10px rgba(36,41,56,.22);
   }
+  .tabbtn.on .ct{color:rgba(255,255,255,.72)}
   .tabbtn:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
   .wire{height:5px; background:#E3E1D8; position:relative}
   .wire i{
@@ -66,16 +64,10 @@
     box-shadow:0 0 10px rgba(233,57,140,.55), 0 0 22px rgba(110,90,224,.35);
     transition:width .35s ease;
   }
-  /* ── פתיח ── */
+  /* ── תוכן ── */
   .wrap{max-width:680px; margin:0 auto; padding:26px 18px 80px}
-  .hero h1{
-    font-family:"Karantina", sans-serif; font-weight:700;
-    font-size:clamp(46px, 13vw, 74px); line-height:.95; margin:6px 0 10px;
-  }
-  .hero h1 .glow{
-    background:var(--wire); -webkit-background-clip:text; background-clip:text; color:transparent;
-    filter:drop-shadow(0 0 14px rgba(233,57,140,.35));
-  }
+  .pcount{font-size:15px; color:var(--ink2); font-weight:500; margin-bottom:14px}
+  .pcount b{color:var(--ink); font-size:18px}
   /* ── טאבים ── */
   .tabpane{display:none}
   .tabpane.on{display:block}
@@ -283,11 +275,11 @@
   .mtab{
     flex:1; font-family:"Karantina","Heebo",sans-serif; font-weight:700; font-size:22px;
     line-height:1.05; cursor:pointer; text-align:center; color:var(--ink2);
-    background:transparent; border:1.5px solid var(--line); border-radius:13px; padding:7px 4px 6px;
+    background:transparent; border:1.5px solid var(--line); border-radius:99px; padding:8px 4px 7px;
   }
   .mtab.on{
-    background:var(--card); color:var(--ink); border-color:transparent;
-    box-shadow:inset 0 -3px 0 0 var(--violet), 0 1px 4px rgba(36,41,56,.06);
+    background:var(--ink); color:#fff; border-color:var(--ink);
+    box-shadow:0 2px 10px rgba(36,41,56,.22);
   }
   .mtab:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
   /* אלמנטים ששייכים רק לטאב האריזה נעלמים כשמציגים את המסלול */
@@ -297,15 +289,18 @@
   body.vroute #view-packing{display:none}
   /* ── טאב המסלול ── */
   .rwrap{max-width:680px; margin:0 auto; padding:26px 18px 60px}
+  /* כפתור בסגנון המותג של גוגל: לבן, אפורי Google, פין המפות הצבעוני */
   .gmaps{
-    display:inline-flex; align-items:center; gap:7px; margin:2px 0 14px;
-    font-size:14px; font-weight:700; color:var(--ink2); text-decoration:none;
-    border:1.5px solid var(--line); border-radius:99px; padding:7px 16px;
+    display:inline-flex; align-items:center; gap:9px; margin:0 0 14px;
+    font-size:14px; font-weight:700; color:#3c4043; text-decoration:none;
+    background:#fff; border:1px solid #dadce0; border-radius:99px; padding:8px 18px;
+    box-shadow:0 1px 3px rgba(60,64,67,.12);
   }
-  .gmaps:hover{color:var(--ink); border-color:var(--ink2)}
+  .gmaps:hover{box-shadow:0 2px 8px rgba(60,64,67,.22)}
+  .gmaps svg{height:19px; width:auto; flex:0 0 auto}
   .gmaps:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
   @media (max-width: 480px){
-    .topbar .name{font-size:19px}
+    .topbar .name{font-size:26px}
   }
   .rmap{
     height:min(60vh, 500px); margin-top:10px;
@@ -321,9 +316,10 @@
     padding:10px 14px 7px; border-bottom:1px solid var(--line);
     font-family:"Karantina","Heebo",sans-serif; font-weight:700; font-size:23px; line-height:1;
   }
-  .calhead{display:grid; grid-template-columns:repeat(7,1fr); border-bottom:1px solid var(--line)}
+  /* רשת הלוח רצה שמאל-לימין כמו בלוחות שנה מערביים - ככה כולנו רגילים */
+  .calhead{display:grid; grid-template-columns:repeat(7,1fr); border-bottom:1px solid var(--line); direction:ltr}
   .calhead div{padding:6px 2px; text-align:center; font-size:11px; font-weight:700; color:var(--ink2)}
-  .calweek{display:grid; grid-template-columns:repeat(7,1fr); border-bottom:1px solid var(--line)}
+  .calweek{display:grid; grid-template-columns:repeat(7,1fr); border-bottom:1px solid var(--line); direction:ltr}
   .calweek:last-child{border-bottom:none}
   .calday{grid-row:1; min-height:80px; min-width:0; padding:4px 4px 5px; border-inline-start:1px solid var(--line)}
   .calday:first-child{border-inline-start:none}
@@ -407,7 +403,6 @@
 <div class="topbar">
   <div class="in">
     <span class="name"><bdi id="siteName">Merica! Oh my here we go again</bdi></span>
-    <span class="tally packonly"><span class="num"><b id="doneAll">0</b> / <span id="totAll">0</span></span> נארזו</span>
   </div>
   <div class="maintabs">
     <button class="mtab on" data-view="route">המסלול</button>
@@ -423,10 +418,10 @@
 
 <div id="view-route">
   <div class="rwrap">
-    <div class="hero">
-      <h1 id="routeHero">שורפים<br><span class="glow">את הכביש</span></h1>
-    </div>
-    <a class="gmaps" href="https://maps.app.goo.gl/avzwcXWqtKTci4RA9" target="_blank" rel="noopener">🧭 המסלול המלא בגוגל מפות</a>
+    <a class="gmaps" href="https://maps.app.goo.gl/avzwcXWqtKTci4RA9" target="_blank" rel="noopener">
+      <svg viewBox="0 0 92.3 132.3" aria-hidden="true"><path fill="#1a73e8" d="M60.2 2.2C55.8.8 51 0 46.1 0 32 0 19.3 6.4 10.8 16.5l21.8 18.3L60.2 2.2z"/><path fill="#ea4335" d="M10.8 16.5C4.1 24.5 0 34.9 0 46.1c0 8.7 1.7 15.7 4.6 22l28-33.3-21.8-18.3z"/><path fill="#4285f4" d="M46.2 28.5c9.8 0 17.7 7.9 17.7 17.7 0 4.3-1.6 8.3-4.2 11.4 0 0 13.9-16.6 27.5-32.7-5.6-10.8-15.3-19-27-22.7L32.6 34.8c3.3-3.8 8.1-6.3 13.6-6.3"/><path fill="#fbbc04" d="M46.2 63.8c-9.8 0-17.7-7.9-17.7-17.7 0-4.3 1.5-8.3 4.1-11.3l-28 33.3c4.8 10.6 12.8 19.2 21 29.9l34.1-40.5c-3.3 3.8-8.1 6.3-13.5 6.3"/><path fill="#34a853" d="M59.1 109.2c15.4-24.1 33.3-35 33.3-63 0-7.7-1.9-14.9-5.2-21.3L25.6 98c2.6 3.4 5.3 7.3 7.9 11.3 9.4 14.5 6.8 23.1 12.8 23.1s3.4-8.7 12.8-23.2"/></svg>
+      פתיחה ב־<bdi>Google Maps</bdi>
+    </a>
     <div class="rmap" id="rmap" dir="ltr"></div>
     <div class="cal" id="cal"></div>
   </div>
@@ -435,9 +430,7 @@
 <div id="view-packing">
 <div class="wrap">
 
-  <div class="hero">
-    <h1>אורזים<br><span class="glow">כמו בוערים</span></h1>
-  </div>
+  <div class="pcount"><span class="num"><b id="doneAll">0</b> / <span id="totAll">0</span></span> נארזו</div>
 
   <div class="tabpane on" data-tab="L" id="pane-L"></div>
   <div class="tabpane" data-tab="A" id="pane-A"></div>
@@ -1389,9 +1382,8 @@
 <script>
 // ── טאב המסלול: נתונים, מפה ופאנל הימים. מודול עצמאי שלא נוגע בלוגיקת הרשימה ──
 (function(){
-  // קבועים קלים לעריכה
+  // קבוע קל לעריכה
   var SITE_NAME = 'Merica! Oh my here we go again';
-  var ROUTE_HERO = 'שורפים<br><span class="glow">את הכביש</span>';
 
   // נתוני הטיול - תחנות לפי סדר הנסיעה. drive = זמן הנסיעה מהתחנה הקודמת
   var TRIP = [
@@ -1421,7 +1413,6 @@
 ];
 
   document.getElementById('siteName').textContent = SITE_NAME;
-  document.getElementById('routeHero').innerHTML = ROUTE_HERO;
 
   function escR(x){
     return String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
