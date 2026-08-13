@@ -34,7 +34,7 @@
     border-bottom:1px solid var(--line);
   }
   .topbar .in{
-    max-width:680px; margin:0 auto; padding:14px 18px 12px;
+    max-width:680px; margin:0 auto; padding:16px 18px 20px;
     display:flex; align-items:center; justify-content:center;
   }
   .topbar .name{
@@ -51,11 +51,12 @@
   }
   .tabbtn .nm{display:block; font-family:"Karantina",sans-serif; font-weight:700; font-size:23px; line-height:1.05}
   .tabbtn .ct{display:block; font-size:11px; font-weight:500; margin-top:2px}
+  /* טאבים פנימיים: קו מתאר על רקע כרטיס - היררכיה מובחנת מהגלולות הראשיות המלאות */
   .tabbtn.on{
-    background:var(--ink); color:#fff; border-color:var(--ink);
-    box-shadow:0 2px 10px rgba(36,41,56,.22);
+    background:var(--card); color:var(--ink); border-color:var(--ink);
+    box-shadow:0 1px 4px rgba(36,41,56,.08);
   }
-  .tabbtn.on .ct{color:rgba(255,255,255,.72)}
+  .tabbtn.on .ct{color:var(--ink2)}
   .tabbtn:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
   .wire{height:5px; background:#E3E1D8; position:relative}
   .wire i{
@@ -66,8 +67,6 @@
   }
   /* ── תוכן ── */
   .wrap{max-width:680px; margin:0 auto; padding:26px 18px 80px}
-  .pcount{font-size:15px; color:var(--ink2); font-weight:500; margin-bottom:14px}
-  .pcount b{color:var(--ink); font-size:18px}
   /* ── טאבים ── */
   .tabpane{display:none}
   .tabpane.on{display:block}
@@ -271,16 +270,22 @@
   .authbtn:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
   .autherr{min-height:1.2em; font-size:13.5px; color:var(--neon-p); font-weight:500}
   /* ── טאבים ראשיים: המסלול | משימות ואריזה ── */
-  .maintabs{max-width:680px; margin:0 auto; padding:0 18px 10px; display:flex; gap:7px}
+  .maintabs{max-width:680px; margin:0 auto; padding:0 18px 16px; display:flex; gap:7px}
   .mtab{
     flex:1; font-family:"Karantina","Heebo",sans-serif; font-weight:700; font-size:22px;
     line-height:1.05; cursor:pointer; text-align:center; color:var(--ink2);
-    background:transparent; border:1.5px solid var(--line); border-radius:99px; padding:8px 4px 7px;
+    background:transparent; border:1.5px solid var(--line); border-radius:99px; padding:7px 4px 6px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .mct{
+    display:block; font-family:"Heebo",sans-serif; font-weight:500; font-size:11px;
+    line-height:1.2; margin-top:1px; color:var(--ink2);
   }
   .mtab.on{
     background:var(--ink); color:#fff; border-color:var(--ink);
     box-shadow:0 2px 10px rgba(36,41,56,.22);
   }
+  .mtab.on .mct{color:rgba(255,255,255,.72)}
   .mtab:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
   /* אלמנטים ששייכים רק לטאב האריזה נעלמים כשמציגים את המסלול */
   body.vroute .packonly{display:none}
@@ -406,7 +411,7 @@
   </div>
   <div class="maintabs">
     <button class="mtab on" data-view="route">המסלול</button>
-    <button class="mtab" data-view="packing">משימות ואריזה</button>
+    <button class="mtab" data-view="packing">משימות ואריזה<span class="mct"><span class="num"><b id="doneAll">0</b> / <span id="totAll">0</span></span> נארזו</span></button>
   </div>
   <div class="tabs packonly" role="tablist">
     <button class="tabbtn on" data-tab="L" role="tab"><span class="nm">לוטם</span><span class="ct" data-ct="L">0 / 0</span></button>
@@ -429,8 +434,6 @@
 
 <div id="view-packing">
 <div class="wrap">
-
-  <div class="pcount"><span class="num"><b id="doneAll">0</b> / <span id="totAll">0</span></span> נארזו</div>
 
   <div class="tabpane on" data-tab="L" id="pane-L"></div>
   <div class="tabpane" data-tab="A" id="pane-A"></div>
