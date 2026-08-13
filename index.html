@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>רשימת אריזה — ארה"ב 2026 · לוטם ועתי</title>
+<title>Merica! Oh my here we go again</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Karantina:wght@400;700&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
@@ -297,6 +297,16 @@
   body.vroute #view-packing{display:none}
   /* ── טאב המסלול ── */
   .rwrap{max-width:1100px; margin:0 auto; padding:26px 18px 60px}
+  .gmaps{
+    display:inline-flex; align-items:center; gap:7px; margin:2px 0 14px;
+    font-size:14px; font-weight:700; color:var(--ink2); text-decoration:none;
+    border:1.5px solid var(--line); border-radius:99px; padding:7px 16px;
+  }
+  .gmaps:hover{color:var(--ink); border-color:var(--ink2)}
+  .gmaps:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
+  @media (max-width: 480px){
+    .topbar .name{font-size:19px}
+  }
   .routegrid{display:flex; gap:16px; align-items:stretch; margin-top:10px}
   .rpanel{flex:0 0 330px; max-height:72vh; overflow-y:auto; padding-inline-end:4px}
   .rmap-box{flex:1 1 auto; min-width:0}
@@ -375,7 +385,7 @@
 
 <div class="topbar">
   <div class="in">
-    <span class="name" id="siteName">האבק והניאון · ארה"ב 2026</span>
+    <span class="name"><bdi id="siteName">Merica! Oh my here we go again</bdi></span>
     <span class="tally packonly"><span class="num"><b id="doneAll">0</b> / <span id="totAll">0</span></span> נארזו</span>
   </div>
   <div class="maintabs">
@@ -393,8 +403,9 @@
 <div id="view-route">
   <div class="rwrap">
     <div class="hero">
-      <h1 id="routeHero">בדרך אל<br><span class="glow">האבק והניאון</span></h1>
+      <h1 id="routeHero">שורפים<br><span class="glow">את הכביש</span></h1>
     </div>
+    <a class="gmaps" href="https://maps.app.goo.gl/avzwcXWqtKTci4RA9" target="_blank" rel="noopener">🧭 המסלול המלא בגוגל מפות</a>
     <div class="routegrid">
       <div class="rpanel" id="rpanel"></div>
       <div class="rmap-box"><div class="rmap" id="rmap" dir="ltr"></div></div>
@@ -406,7 +417,7 @@
 <div class="wrap">
 
   <div class="hero">
-    <h1>אורזים אל<br><span class="glow">האבק והניאון</span></h1>
+    <h1>אורזים<br><span class="glow">כמו בוערים</span></h1>
   </div>
 
   <div class="tabpane on" data-tab="L" id="pane-L"></div>
@@ -1360,8 +1371,8 @@
 // ── טאב המסלול: נתונים, מפה ופאנל הימים. מודול עצמאי שלא נוגע בלוגיקת הרשימה ──
 (function(){
   // קבועים קלים לעריכה
-  var SITE_NAME = 'האבק והניאון · ארה"ב 2026';
-  var ROUTE_HERO = 'בדרך אל<br><span class="glow">האבק והניאון</span>';
+  var SITE_NAME = 'Merica! Oh my here we go again';
+  var ROUTE_HERO = 'שורפים<br><span class="glow">את הכביש</span>';
 
   // נתוני הטיול - תחנות לפי סדר הנסיעה. drive = זמן הנסיעה מהתחנה הקודמת
   var TRIP = [
