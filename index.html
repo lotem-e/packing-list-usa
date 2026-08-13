@@ -42,16 +42,6 @@
   }
   .topbar .tally{font-size:14px; color:var(--ink2); font-weight:500; white-space:nowrap}
   .topbar .tally b{color:var(--ink); font-size:16px}
-  .editbtn{
-    font-family:inherit; font-size:13px; font-weight:700; color:var(--ink2);
-    background:none; border:1.5px solid var(--line); border-radius:99px;
-    padding:4px 13px; cursor:pointer; white-space:nowrap;
-  }
-  .editmode .editbtn{
-    color:var(--violet); border-color:var(--violet);
-    box-shadow:0 0 8px rgba(110,90,224,.3);
-  }
-  .editbtn:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
   .tabs{max-width:680px; margin:0 auto; padding:0 18px 10px; display:flex; gap:7px}
   .tabbtn{
     flex:1; font-family:inherit; cursor:pointer; text-align:center;
@@ -154,17 +144,17 @@
   .tx small{display:block; color:var(--ink2); font-size:13px; line-height:1.45; margin-top:1px}
   li.it.done .tx{color:var(--ink2); text-decoration:line-through; text-decoration-color:rgba(102,107,125,.6)}
   li.it.done .tx small{text-decoration:none; opacity:.7}
-  /* ── עריכה ── */
-  .ictl{display:none; align-items:center; gap:6px; padding-inline-start:2px; padding-inline-end:4px}
-  .editmode .ictl{display:flex}
-  .ictl button{
-    width:31px; height:31px; border-radius:10px; cursor:pointer;
-    border:1.5px solid var(--line); background:#fff; color:var(--ink2);
-    font-size:14px; line-height:1; padding:0;
+  /* ── עריכה: עיפרון שקט בכל שורה ── */
+  .ictl{display:flex; align-items:center; padding-inline-end:2px}
+  .ictl .edb{
+    width:42px; height:42px; align-self:center; border-radius:12px; cursor:pointer;
+    border:none; background:none; color:var(--ink2); opacity:.65; padding:0;
+    display:flex; align-items:center; justify-content:center;
+    transition:opacity .15s ease, background .15s ease;
   }
-  .ictl button:hover{color:var(--ink); border-color:var(--ink2)}
-  .ictl button.del:hover{color:var(--neon-p); border-color:var(--neon-p)}
-  .ictl button:focus-visible{outline:3px solid var(--violet); outline-offset:1px}
+  .ictl .edb svg{width:17px; height:17px; display:block}
+  .ictl .edb:hover{opacity:1; color:var(--ink); background:rgba(36,41,56,.06)}
+  .ictl .edb:focus-visible{outline:3px solid var(--violet); outline-offset:1px; opacity:1}
   li.addrow{
     margin:8px 8px 2px; padding:9px 12px; border:1.5px dashed var(--line);
     border-radius:12px; color:var(--ink2); font-weight:500; font-size:14.5px;
@@ -183,7 +173,18 @@
   }
   .ed input:focus{outline:2px solid var(--violet); outline-offset:1px}
   .ed input.en{font-size:14px}
-  .edbtns{display:flex; gap:8px; justify-content:flex-start}
+  .ed label.fl{
+    display:flex; flex-direction:column; gap:5px;
+    font-size:12px; font-weight:700; color:var(--ink2);
+  }
+  .edbtns{display:flex; gap:8px; align-items:center}
+  .eddel{
+    font:inherit; font-size:14px; font-weight:500; color:var(--ink2); background:none;
+    border:none; border-radius:99px; padding:7px 12px; cursor:pointer;
+    margin-inline-start:auto;
+  }
+  .eddel:hover{color:var(--neon-p); background:rgba(233,57,140,.07)}
+  .eddel:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
   .edsave{
     font:inherit; font-weight:700; font-size:14px; color:#fff; background:var(--ink);
     border:none; border-radius:99px; padding:7px 18px; cursor:pointer;
@@ -208,13 +209,30 @@
   }
   button.reset:hover{color:var(--ink); border-color:var(--ink2)}
   button.reset:focus-visible{outline:3px solid var(--violet); outline-offset:2px}
-  #restoreBtn{display:none}
-  .editmode #restoreBtn{display:inline-block}
+  /* ── טוסט עם ביטול פעולה ── */
+  .toast{
+    position:fixed; bottom:16px; inset-inline:16px; z-index:30;
+    display:flex; align-items:center; gap:6px;
+    width:fit-content; max-width:calc(100vw - 32px); margin-inline:auto;
+    background:var(--ink); color:#fff; border-radius:99px;
+    padding:8px 18px 8px 8px; box-shadow:0 6px 24px rgba(36,41,56,.35);
+    opacity:0; transform:translateY(10px); pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .toast.show{opacity:1; transform:none; pointer-events:auto}
+  .toast .msg{font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .toast button{
+    font:inherit; font-size:14px; font-weight:700; color:#fff;
+    background:rgba(255,255,255,.16); border:none; border-radius:99px;
+    padding:6px 14px; cursor:pointer; white-space:nowrap;
+  }
+  .toast button:hover{background:rgba(255,255,255,.26)}
+  .toast button:focus-visible{outline:3px solid var(--neon-c); outline-offset:2px}
   @media (prefers-reduced-motion: reduce){
     *{transition:none !important}
   }
   @media print{
-    .topbar,.foot,.ictl,li.addrow{display:none}
+    .topbar,.foot,.ictl,li.addrow,.toast{display:none}
     body{background:#fff}
     .tabpane{display:block !important}
     .ptitle{
@@ -232,7 +250,6 @@
   <div class="in">
     <span class="name">רשימת האריזה</span>
     <span class="tally"><b id="doneAll">0</b> / <span id="totAll">0</span> נארזו</span>
-    <button class="editbtn" id="editBtn">✎ עריכה</button>
   </div>
   <div class="tabs" role="tablist">
     <button class="tabbtn on" data-tab="L" role="tab"><span class="nm">לוטם</span><span class="ct" data-ct="L">0 / 0</span></button>
@@ -260,6 +277,11 @@
     <span class="save" id="saveNote">ההתקדמות נשמרת אוטומטית</span>
   </div>
 
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <span class="msg" id="toastMsg"></span>
+  <button id="toastUndo" type="button">ביטול</button>
 </div>
 
 <script>
@@ -491,12 +513,22 @@
     });
   }
 
+  // אייקון עיפרון (SVG) לכפתור העריכה שבכל שורה
+  var PEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>';
+
   function edHTML(it){
+    // אם יש טיוטה שנשמרה בזמן רינדור מחדש - היא גוברת על הערכים המקוריים
+    var d = (editing && editing.draft) || null;
+    var vt = d ? d.t : (it ? it.t : '');
+    var vn = d ? d.n : (it ? it.n : '');
     return '<li class="edrow"><div class="ed">' +
-      '<input class="etx" placeholder="שם הפריט" value="' + (it ? esc(it.t) : '') + '">' +
-      '<input class="en" placeholder="הערה קטנה (לא חובה)" value="' + (it ? esc(it.n) : '') + '">' +
-      '<div class="edbtns"><button class="edsave">שמירה</button><button class="edcancel">ביטול</button></div>' +
-      '</div></li>';
+      '<label class="fl">שם הפריט' +
+      '<input class="etx" value="' + esc(vt) + '"></label>' +
+      '<label class="fl">הערה קטנה - לא חובה' +
+      '<input class="en" value="' + esc(vn) + '"></label>' +
+      '<div class="edbtns"><button class="edsave">שמירה</button><button class="edcancel">ביטול</button>' +
+      (it ? '<button class="eddel" data-id="' + esc(it.id) + '">מחיקה</button>' : '') +
+      '</div></div></li>';
   }
 
   function secHTML(p, k){
@@ -513,8 +545,7 @@
         '<label><input type="checkbox" data-id="' + it.id + '"' + (it.d ? ' checked' : '') + '>' +
         '<span class="box"></span><span class="tx">' + esc(it.t) +
         (it.n ? '<small>' + esc(it.n) + '</small>' : '') + '</span></label>' +
-        '<span class="ictl"><button class="ed" data-id="' + it.id + '" title="עריכה">✎</button>' +
-        '<button class="del" data-id="' + it.id + '" title="מחיקה">✕</button></span></li>';
+        '<span class="ictl"><button class="edb" data-id="' + it.id + '" aria-label="עריכת ״' + esc(it.t) + '״">' + PEN + '</button></span></li>';
     });
     if (editing && editing.p === p && editing.k === k && editing.id === null){ h += edHTML(null); }
     else { h += '<li class="addrow" data-p="' + p + '" data-k="' + k + '">+ הוספת פריט</li>'; }
@@ -529,7 +560,21 @@
 
   function focusEditor(scope){
     var f = (scope || document).querySelector('.ed .etx');
-    if (f){ f.focus(); }
+    if (f){
+      f.focus();
+      // מציב את הסמן בסוף הטקסט הקיים במקום לסמן את כולו
+      var L = f.value.length;
+      try { f.setSelectionRange(L, L); } catch(e){}
+    }
+  }
+
+  // שומר את מה שהוקלד בעורך לפני רינדור מחדש, כדי שהטיוטה לא תלך לאיבוד
+  function captureDraft(){
+    if (!editing) return;
+    var row = document.querySelector('.edrow');
+    if (!row) return;
+    var tx = row.querySelector('.etx'), n = row.querySelector('.en');
+    editing.draft = {t: tx ? tx.value : '', n: n ? n.value : ''};
   }
 
   function render(){
@@ -598,16 +643,19 @@
     var tx = row.querySelector('.etx').value.trim();
     var n = row.querySelector('.en').value.trim();
     var ed = editing;
+    // שמירה על שדה ריק סוגרת את העורך - זו גם הדרך לסיים רצף הוספות
     if (!tx){ editing = null; rerenderSec(ed.p, ed.k); return; }
     if (ed.id){
       var r = byId[ed.id];
       if (r){ r.it.t = tx; r.it.n = n; }
+      editing = null;
     } else {
       var arr = state.lists[ed.p][ed.k];
       var hasSubs = arr.some(function(x){ return x.s; });
       arr.push({id: newId(), t: tx, n: n, s: hasSubs ? 'הוספות שלכם' : '', d: false});
+      // הוספה רציפה: אחרי שמירת פריט חדש נפתחת מיד שורה ריקה נוספת
+      editing = {p: ed.p, k: ed.k, id: null, draft: null};
     }
-    editing = null;
     rerenderSec(ed.p, ed.k);
     persist();
   }
@@ -630,42 +678,48 @@
     var r = byId[cb.dataset.id];
     if (!r) return;
     r.it.d = cb.checked;
+    // אם עורכים באותה קבוצה - שומרים את הטיוטה לפני הרינדור מחדש
+    if (editing && editing.p === r.p && editing.k === r.k) captureDraft();
     rerenderSec(r.p, r.k);
     persist();
   });
 
   document.addEventListener('click', function(ev){
     var t = ev.target;
-    if (!t) return;
-    var add = t.closest ? t.closest('.addrow') : null;
+    if (!t || !t.closest) return;
+    var add = t.closest('.addrow');
     if (add){
-      editing = {p: add.dataset.p, k: add.dataset.k, id: null};
+      editing = {p: add.dataset.p, k: add.dataset.k, id: null, draft: null};
       rerenderSec(editing.p, editing.k);
       return;
     }
-    if (t.classList.contains('ed') && t.dataset.id){
-      var r = byId[t.dataset.id];
+    // closest ולא בדיקת target ישירה - כי הקליק יכול לפגוע ב־SVG שבתוך הכפתור
+    var eb = t.closest('button.edb');
+    if (eb){
+      var r = byId[eb.dataset.id];
       if (!r) return;
       var prev = editing;
-      editing = {p: r.p, k: r.k, id: r.it.id};
+      editing = {p: r.p, k: r.k, id: r.it.id, draft: null};
       if (prev && (prev.p !== r.p || prev.k !== r.k)) rerenderSec(prev.p, prev.k);
       rerenderSec(r.p, r.k);
       return;
     }
-    if (t.classList.contains('del') && t.dataset.id){
-      var r2 = byId[t.dataset.id];
+    // מחיקה מתוך כרטיס העריכה: מוחקים מיד, והטוסט מציע ביטול
+    var db = t.closest('button.eddel');
+    if (db){
+      var r2 = byId[db.dataset.id];
       if (!r2) return;
-      if (!confirm('למחוק את ״' + r2.it.t + '״?')) return;
       var arr = state.lists[r2.p][r2.k];
       var ix = arr.indexOf(r2.it);
       if (ix > -1) arr.splice(ix, 1);
-      if (editing && editing.id === r2.it.id) editing = null;
+      editing = null;
+      setUndo({type: 'del', p: r2.p, k: r2.k, ix: ix, item: r2.it}, 'נמחק: ״' + r2.it.t + '״');
       rerenderSec(r2.p, r2.k);
       persist();
       return;
     }
-    if (t.classList.contains('edsave')){ saveEditor(t); return; }
-    if (t.classList.contains('edcancel')){
+    if (t.closest('button.edsave')){ saveEditor(t); return; }
+    if (t.closest('button.edcancel')){
       var ed = editing; editing = null;
       if (ed) rerenderSec(ed.p, ed.k);
       return;
@@ -688,28 +742,75 @@
     b.addEventListener('click', function(){ setTab(b.dataset.tab); });
   });
 
-  document.getElementById('editBtn').addEventListener('click', function(){
-    document.body.classList.toggle('editmode');
-    if (!document.body.classList.contains('editmode') && editing){
-      var ed = editing; editing = null;
-      rerenderSec(ed.p, ed.k);
-    }
-  });
+  // ── טוסט + ביטול הפעולה האחרונה ──
+  // במקום חלונות אישור: הפעולה קורית מיד, והטוסט מחזיק "ביטול" ממוקד לכמה שניות.
+  // הביטול מחזיר רק את מה שהפעולה שינתה, כך שסימונים שנעשו בינתיים לא נדרסים.
+  var toastEl = document.getElementById('toast');
+  var toastMsg = document.getElementById('toastMsg');
+  var toastUndoBtn = document.getElementById('toastUndo');
+  var toastTimer = null, undoAct = null;
 
-  document.getElementById('resetBtn').addEventListener('click', function(){
-    if (!confirm('לנקות את כל הסימונים ברשימה של ״' + NAMES[activeTab] + '״? הפריטים עצמם יישארו.')) return;
-    ORDER[activeTab].forEach(function(k){
-      state.lists[activeTab][k].forEach(function(it){ it.d = false; });
-    });
+  function showToast(msg, canUndo){
+    if (!canUndo) undoAct = null;
+    toastMsg.textContent = msg;
+    toastUndoBtn.style.display = canUndo ? '' : 'none';
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideToast, 6000);
+  }
+  function hideToast(){
+    clearTimeout(toastTimer);
+    toastEl.classList.remove('show');
+    undoAct = null;
+  }
+  function setUndo(u, msg){
+    undoAct = u;
+    showToast(msg, true);
+  }
+  toastUndoBtn.addEventListener('click', function(){
+    if (!undoAct) return;
+    var u = undoAct;
+    if (u.type === 'del'){
+      // החזרת פריט שנמחק למקומו המקורי
+      var arr = state.lists[u.p][u.k];
+      arr.splice(Math.min(u.ix, arr.length), 0, u.item);
+    } else if (u.type === 'check'){
+      // החזרת סימונים שאופסו
+      var m = {};
+      u.ids.forEach(function(id){ m[id] = true; });
+      ORDER[u.p].forEach(function(k){
+        state.lists[u.p][k].forEach(function(it){ if (m[it.id]) it.d = true; });
+      });
+    } else if (u.type === 'tab'){
+      // החזרת טאב שלם שנדרס בשחזור לרשימה המקורית
+      try { state.lists[u.p] = JSON.parse(u.lists); } catch(e){}
+    }
+    hideToast();
     editing = null;
     render();
     persist();
   });
 
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    var ids = [];
+    ORDER[activeTab].forEach(function(k){
+      state.lists[activeTab][k].forEach(function(it){ if (it.d) ids.push(it.id); });
+    });
+    if (!ids.length){ showToast('אין סימונים לאפס אצל ' + NAMES[activeTab], false); return; }
+    ORDER[activeTab].forEach(function(k){
+      state.lists[activeTab][k].forEach(function(it){ it.d = false; });
+    });
+    editing = null;
+    setUndo({type: 'check', p: activeTab, ids: ids}, 'הסימונים של ״' + NAMES[activeTab] + '״ אופסו');
+    render();
+    persist();
+  });
+
   document.getElementById('restoreBtn').addEventListener('click', function(){
-    if (!confirm('לשחזר את הרשימה המקורית של ״' + NAMES[activeTab] + '״? פריטים שהוספתם או ערכתם בטאב הזה יימחקו, והסימונים בו יתאפסו.')) return;
+    var old = JSON.stringify(state.lists[activeTab]);
     state.lists[activeTab] = seedTab(activeTab);
     editing = null;
+    setUndo({type: 'tab', p: activeTab, lists: old}, 'הרשימה של ״' + NAMES[activeTab] + '״ שוחזרה למקור');
     render();
     persist();
   });
