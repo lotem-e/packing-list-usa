@@ -1061,8 +1061,8 @@
       var sel2 = card.querySelector('.ecat');
       var item = {id: newId(), t: tx, n: n, s: sel2 ? sel2.value : '', d: false};
       insertByCat(arr, item);
-      // הוספה רציפה: שורה ריקה חדשה שזוכרת את הקטגוריה שנבחרה
-      editing = {p: ed.p, k: ed.k, id: null, draft: {t: '', n: '', s: item.s}};
+      // שמירה סוגרת את העורך - להוספה נוספת לוחצים שוב על הוספת פריט
+      editing = null;
     }
     rerenderSec(ed.p, ed.k);
     persist();
